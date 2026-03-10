@@ -8,7 +8,8 @@ Crea notas técnicas sobre **[TEMA]** siguiendo este estilo minimalista y univer
 
 ### 1. Encabezado Principal
 
-- Título: `# [Tema] Notes`
+- Título: `# [Tecnología] [Tema]` — ej. `# Python OOP`, `# Python Testing`, `# React Hooks`
+- **Sin** la palabra "Notes" al final
 - Sin introducción larga, directo al contenido
 
 ### 2. Organización por Secciones
@@ -277,7 +278,7 @@ Usar listas con prefijo de código cuando se describen variantes:
 ## PLANTILLA BASE
 
 ```markdown
-# [Topic] Notes
+# [Technology] [Topic]
 
 ## Section Name
 *Short description in italics*
@@ -322,6 +323,75 @@ Content following same pattern...
 
 ---
 
+## ORGANIZACIÓN DE CARPETAS
+
+### Estructura general
+
+```
+tecnologia/
+├── README.md  
+├── 01-grupo/  
+│   ├── tema-a.md  
+│   └── tema-b.md  
+├── 02-grupo/  
+│   ├── tema-c.md  
+│   └── tema-con-archivos/      ← solo si tiene más de 1 archivo  
+│       ├── notes.md  
+│       └── example.py  
+└── 03-grupo/  
+    └── tema-d.md  
+```
+
+### Reglas de estructura
+
+1. **Grupos numerados** — carpetas con prefijo `01-`, `02-`... para mantener orden visual en el explorador de archivos. El número implica progresión de aprendizaje.
+
+2. **Archivos planos** — si un tema tiene un solo archivo, va directo como `tema.md` dentro del grupo. **No crear subcarpeta** solo para contener un `notes.md`.
+
+3. **Subcarpeta solo si hay múltiples archivos** — ej. `oop/notes.md` + `oop/example.py` justifica una carpeta `oop/`.
+
+4. **Nombres en `kebab-case` minúsculas** — `error-handling.md`, `design-patterns.md`, `env-config.md`. Sin mayúsculas, sin espacios.
+
+5. **README por tecnología** — tabla de índice agrupada por sección, con una línea descriptiva en cursiva por grupo.
+
+### Formato del README
+
+```markdown
+# [Tecnología] Notes
+
+## Index
+
+### 01 - Nombre del Grupo
+*Descripción corta en cursiva*
+
+| # | Topic | Path |
+|---|-------|------|
+| 1 | Tema A | `01-grupo/tema-a.md` |
+| 2 | Tema B | `01-grupo/tema-b.md` |
+
+### 02 - Siguiente Grupo
+*Descripción corta en cursiva*
+
+| # | Topic | Path |
+|---|-------|------|
+| 3 | Tema C | `02-grupo/tema-c.md` |
+```
+
+### Ejemplo real - Python Notes
+
+```
+python/
+├── README.md
+├── 01-core/       fundamentals.md, control-flow.md, functions.md, data-structures.md
+├── 02-oop/        oop/ (notes.md + example.py), solid.md, design-patterns.md
+├── 03-stdlib/     modules.md, error-handling.md, file-io.md, regex.md, logging.md, datetime.md, collections.md
+├── 04-advanced/   language-features.md, stdlib-utils.md, concurrency.md
+├── 05-tooling/    testing.md, debugging.md, packaging.md, env-config.md, cli.md
+└── 06-ecosystem/  database.md, http.md, pydantic.md
+```
+
+---
+
 ## CHECKLIST FINAL
 
 Antes de entregar las notas, verificar:
@@ -338,5 +408,12 @@ Antes de entregar las notas, verificar:
 - [ ] Listas de definiciones verticales terminan con dos espacios por línea
 - [ ] Listas de propiedades en línea cuando son cortas
 - [ ] Best Practices al final del documento
+- [ ] Título sin la palabra "Notes" — formato `# Tecnología Tema`
+
+**Carpetas**:
+- [ ] Grupos numerados (`01-`, `02-`...)
+- [ ] Archivos planos (`tema.md`) salvo cuando hay múltiples archivos por tema
+- [ ] Nombres en `kebab-case` minúsculas
+- [ ] README con tabla por grupo y descripción en cursiva
 
 **Regla de oro**: Si algo puede explicarse en menos palabras, hazlo.
