@@ -23,6 +23,35 @@ Alt + Insert        Generate code (getter/setter/constructor)
 
 ---
 
+## Navigation
+
+```
+Ctrl + B            Go to declaration
+Ctrl + E            Recent files
+Alt + F7            Find usages
+Ctrl + H            Type hierarchy
+Ctrl + Alt + B      Go to implementation
+Ctrl + U            Go to super method/class
+Ctrl + G            Go to line number
+Ctrl + F            Find in file
+Ctrl + Shift + F    Find in all files
+```
+
+---
+
+## Refactoring
+
+```
+Ctrl + Alt + M      Extract method
+Ctrl + Alt + V      Extract variable
+Ctrl + Alt + C      Extract constant
+Ctrl + Alt + F      Extract field
+Ctrl + Alt + P      Extract parameter
+Ctrl + Alt + N      Inline variable/method
+```
+
+---
+
 ## Live Templates (word + Tab)
 
 ```

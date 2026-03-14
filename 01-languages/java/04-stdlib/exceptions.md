@@ -43,6 +43,13 @@ try {
     System.out.println("Other error");
 }
 
+// Multi-catch (same handler for multiple types)
+try {
+    // code
+} catch (IOException | SQLException e) {
+    System.out.println("IO or SQL error: " + e.getMessage());
+}
+
 // Finally (always executes)
 try {
     // code

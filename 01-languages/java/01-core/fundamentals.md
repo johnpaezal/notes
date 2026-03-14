@@ -129,6 +129,256 @@ int w = (int) z; // double → int (loses decimal)
 
 ---
 
+## Strings
+*Text manipulation*
+
+```java
+String s = "Hello World";
+
+// Info
+s.length();              // 11
+s.charAt(0);             // 'H'
+s.indexOf("World");      // 6
+s.contains("Hello");     // true
+s.isEmpty();             // false
+s.isBlank();             // false (also checks whitespace)
+
+// Transform
+s.toUpperCase();         // "HELLO WORLD"
+s.toLowerCase();         // "hello world"
+s.trim();                // remove leading/trailing spaces
+s.strip();               // like trim() but Unicode-aware
+s.replace("Hello", "Hi"); // "Hi World"
+
+// Extract
+s.substring(6);          // "World"
+s.substring(0, 5);       // "Hello"
+s.split(" ");            // ["Hello", "World"]
+
+// Compare
+s.equals("Hello World");         // true (use this, not ==)
+s.equalsIgnoreCase("hello world"); // true
+
+// Check
+s.startsWith("Hello");  // true
+s.endsWith("World");    // true
+
+// Build
+String joined = String.join(", ", "a", "b", "c");  // "a, b, c"
+String formatted = "Name: %s, Age: %d".formatted("Alice", 25);
+
+// StringBuilder (mutable, efficient for concatenation)
+StringBuilder sb = new StringBuilder();
+sb.append("Hello");
+sb.append(" World");
+String result = sb.toString();  // "Hello World"
+```
+
+---
+
+## Arrays
+*Fixed-size ordered collection of elements*
+
+```java
+// Declaration and initialization
+int[] nums = {1, 2, 3, 4, 5};
+String[] names = new String[3];    // size 3, all null
+int[] zeros = new int[5];          // size 5, all 0
+
+// Access
+nums[0];              // 1 (first)
+nums[nums.length - 1]; // 5 (last)
+nums.length;           // 5
+
+// Modify
+nums[0] = 10;
+
+// Iterate
+for (int n : nums) {
+    System.out.println(n);
+}
+
+// Utility (java.util.Arrays)
+Arrays.sort(nums);                          // sort in place
+Arrays.toString(nums);                      // "[1, 2, 3, 4, 5]"
+Arrays.fill(nums, 0);                       // fill all with 0
+int[] copy = Arrays.copyOf(nums, nums.length);  // copy
+Arrays.copyOfRange(nums, 1, 4);             // partial copy [1..3]
+
+// 2D array
+int[][] matrix = {{1, 2}, {3, 4}, {5, 6}};
+matrix[0][1];  // 2
+```
+
+---
+
+## Operators
+*Arithmetic and assignment*
+
+```java
+// Arithmetic
++   -   *   /   %    // add, subtract, multiply, divide, modulo
+10 / 3   // 3 (integer division)
+10 % 3   // 1 (remainder)
+10.0 / 3 // 3.333... (double division)
+
+// Increment / Decrement
+i++   // use then increment
+++i   // increment then use
+i--   // use then decrement
+--i   // decrement then use
+
+// Assignment shortcuts
+x += 5;   // x = x + 5
+x -= 5;
+x *= 2;
+x /= 2;
+x %= 3;
+```
+
+---
+
+## Wrapper Classes & Autoboxing
+*Primitive types as objects*
+
+Each primitive has a wrapper class — needed for collections and generics.
+
+| Primitive | Wrapper   |
+|-----------|-----------|
+| `int`     | `Integer` |
+| `double`  | `Double`  |
+| `boolean` | `Boolean` |
+| `char`    | `Character` |
+| `long`    | `Long`    |
+| `float`   | `Float`   |
+
+```java
+// Autoboxing – primitive → wrapper (automatic)
+int n = 5;
+Integer obj = n;           // auto-boxed
+
+// Unboxing – wrapper → primitive (automatic)
+Integer obj = 42;
+int n = obj;               // auto-unboxed
+
+// Useful static methods
+Integer.parseInt("42");        // String → int
+Integer.toString(42);          // int → String
+Integer.MAX_VALUE;             // 2147483647
+Integer.MIN_VALUE;             // -2147483648
+Double.parseDouble("3.14");    // String → double
+Character.isDigit('5');        // true
+Character.isLetter('a');       // true
+Character.toUpperCase('a');    // 'A'
+
+// Collections need wrappers, not primitives
+List<Integer> nums = new ArrayList<>();  // not List<int>
+nums.add(5);   // autoboxing happens here
+int x = nums.get(0);  // unboxing happens here
+```
+
+---
+
+## Varargs
+*Variable number of arguments*
+
+```java
+// Declare with ...
+void printAll(String... words) {
+    for (String w : words) {
+        System.out.println(w);
+    }
+}
+
+// Call with any number of args
+printAll("hello");
+printAll("a", "b", "c");
+printAll();  // zero args also valid
+
+// Varargs is just an array internally
+int sum(int... nums) {
+    int total = 0;
+    for (int n : nums) total += n;
+    return total;
+}
+
+// Must be the last parameter
+void log(String level, String... messages) { }
+```
+
+---
+
+## Packages & Imports
+*Organize and reuse code across files*
+
+```java
+// Declare package (top of file, matches folder structure)
+package com.company.project;
+
+// Import a specific class
+import java.util.ArrayList;
+import java.util.List;
+
+// Import all classes from a package
+import java.util.*;
+
+// Static import (use static members without class name)
+import static java.lang.Math.PI;
+import static java.lang.Math.*;
+
+double area = PI * r * r;   // instead of Math.PI
+double x = sqrt(16);        // instead of Math.sqrt(16)
+
+// java.lang is imported automatically (String, Math, System, etc.)
+```
+
+---
+
+## Text Blocks (Java 15+)
+*Multiline strings without escape characters*
+
+```java
+// Traditional string (ugly escaping)
+String json = "{\n  \"name\": \"Alice\",\n  \"age\": 25\n}";
+
+// Text block (clean)
+String json = """
+        {
+          "name": "Alice",
+          "age": 25
+        }
+        """;
+
+// SQL example
+String query = """
+        SELECT *
+        FROM users
+        WHERE age > 18
+        ORDER BY name
+        """;
+
+// Indentation is relative to the closing """
+// Trailing newline is included; to remove it, put """ on last line:
+String noTrailingNewline = """
+        hello""";
+```
+
+---
+
+## `var` – Type Inference (Java 10+)
+*Let the compiler infer the type*
+
+```java
+var name = "Alice";         // String
+var age = 25;               // int
+var list = new ArrayList<String>();  // ArrayList<String>
+
+// Only works for local variables
+// Cannot be used for fields, parameters, or return types
+```
+
+---
+
 ## Input
 *Reading user data from console*
 

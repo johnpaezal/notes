@@ -17,11 +17,28 @@ if (age >= 18) {
 // Ternary
 String result = (age >= 18) ? "adult" : "minor";
 
-// Switch
+// Switch (statement)
 switch (day) {
     case "Mon", "Fri" -> System.out.println("edge day");
     default -> System.out.println("midweek");
 }
+
+// Switch expression (returns a value, Java 14+)
+String label = switch (day) {
+    case "Mon" -> "Monday";
+    case "Fri" -> "Friday";
+    default -> "Other";
+};
+
+// Switch expression with block
+int result = switch (status) {
+    case 1 -> 100;
+    case 2 -> {
+        int x = 200;
+        yield x * 2;   // yield returns the value from a block
+    }
+    default -> 0;
+};
 ```
 
 ---

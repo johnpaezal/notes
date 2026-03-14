@@ -442,6 +442,166 @@ Dog d = (Dog) a;
 
 ---
 
+## Object Class
+*Root of all Java classes*
+
+Every class implicitly extends `Object`. Key methods you can override:
+
+```java
+class Person {
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // toString – called when printing object
+    @Override
+    public String toString() {
+        return "Person{name=" + name + ", age=" + age + "}";
+    }
+
+    // equals – compare by value (not reference)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Person other)) return false;
+        return age == other.age && name.equals(other.name);
+    }
+
+    // hashCode – must be consistent with equals
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+
+Person p1 = new Person("Alice", 25);
+Person p2 = new Person("Alice", 25);
+
+p1.equals(p2);      // true (value comparison)
+p1 == p2;           // false (reference comparison)
+System.out.println(p1);  // "Person{name=Alice, age=25}"
+p1.getClass();      // class Person
+```
+
+**Rule**: always override both `equals` and `hashCode` together — if two objects are equal, they must have the same hash code.
+
+---
+
+## Nested / Inner Classes
+*Class defined inside another class*
+
+```java
+// Inner class (has access to outer class members)
+class Outer {
+    private int x = 10;
+
+    class Inner {
+        void show() {
+            System.out.println(x);  // can access outer's private
+        }
+    }
+}
+
+Outer outer = new Outer();
+Outer.Inner inner = outer.new Inner();
+inner.show();
+
+// Static nested class (no access to outer instance)
+class Outer {
+    static class StaticNested {
+        void show() {
+            System.out.println("static nested");
+        }
+    }
+}
+
+Outer.StaticNested nested = new Outer.StaticNested();
+
+// Anonymous class (one-off implementation)
+Runnable r = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("running");
+    }
+};
+// Modern equivalent with lambda:
+Runnable r = () -> System.out.println("running");
+```
+
+---
+
+## Sealed Classes (Java 17+)
+*Restrict which classes can extend or implement a type*
+
+```java
+// sealed class – only listed classes can extend it
+sealed class Shape permits Circle, Rectangle, Triangle { }
+
+final class Circle extends Shape {
+    double radius;
+}
+
+final class Rectangle extends Shape {
+    double width, height;
+}
+
+non-sealed class Triangle extends Shape {
+    // non-sealed: allows further extension
+}
+
+// Useful with pattern matching switch (Java 21)
+double area = switch (shape) {
+    case Circle c    -> Math.PI * c.radius * c.radius;
+    case Rectangle r -> r.width * r.height;
+    case Triangle t  -> 0.5 * t.base * t.height;
+};
+```
+
+**Why use it**: compiler guarantees exhaustive handling — no unknown subtypes can appear.
+
+---
+
+## Static Initializer Blocks
+*Run code once when the class is loaded*
+
+```java
+class Config {
+    static final Map<String, String> DEFAULTS;
+    static final List<String> ALLOWED_ROLES;
+
+    // Static block – runs once when class is first loaded
+    static {
+        DEFAULTS = new HashMap<>();
+        DEFAULTS.put("timeout", "30");
+        DEFAULTS.put("retries", "3");
+        DEFAULTS.put("host", "localhost");
+
+        ALLOWED_ROLES = List.of("ADMIN", "USER", "GUEST");
+    }
+}
+
+// Instance initializer block – runs before every constructor
+class Counter {
+    int count;
+
+    {
+        count = 0;
+        System.out.println("instance created");
+    }
+
+    Counter() { }
+    Counter(int start) { this.count = start; }
+}
+```
+
+**When to use static blocks**: when initializing a `static final` field requires multiple statements or can throw exceptions.
+
+---
+
 ## Decoupling
 *Reducing dependency between classes*
 
