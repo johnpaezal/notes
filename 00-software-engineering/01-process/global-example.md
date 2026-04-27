@@ -3,7 +3,7 @@
 
 Example project: **"TravelMate"** — app that notifies travelers about flight changes.
 
-Format based on IEEE 830 SRS style (used in Microsoft, Google, Amazon specs).
+Format based on IEEE 830 SRS style (used in Microsoft, Google, Amazon specs)..
 
 **ID prefixes**:
 - `UN` – User Need
