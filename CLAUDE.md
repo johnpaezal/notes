@@ -45,22 +45,27 @@ Every time a new topic is created or updated, immediately add the corresponding 
 
 ## Repository Map
 
+Only folders that currently exist with content are listed. New stage folders are added on demand per `ROADMAP.md`.
+
 | Folder | Content |
 |--------|---------|
-| `00-software-engineering/` | SE fundamentals + architecture prototypes |
-| `01-languages/` | Python and Java notes |
-| `02-infrastructure/` | Linux, Bash, Docker, Kubernetes, Networking |
-| `03-databases/` | SQL, NoSQL, Data Modeling |
-| `06-cloud/aws/` | AWS services (Stages 5–6) |
-| `06-cloud/terraform/` | IaC with Terraform |
-| `09-system-design/` | Scalability, components, patterns, case studies |
+| `00-software-engineering/` | SE fundamentals: `01-process`, `02-design`, `03-architecture`, `04-quality`, `05-delivery`, `06-communication`, `07-global-example` |
+| `01-languages/` | `python/` (core → fastapi, flask), `java/` (core → ecosystem) |
+| `02-infrastructure/` | `docker/`, `networking/`, `linux/`, `bash/`, `kubernetes/` (linux, bash, kubernetes — pending notes) |
+| `03-databases/` | `sql/`, `nosql/`, `data-modeling/` |
+| `04-web/` | `angular/` (pending) |
+| `05-tooling/` | `git/`, `json-yaml/`, `ci-cd/`, `testing/`, `best-practices/` (all pending) |
+| `06-cloud/` | `aws/` (01-core → 08-security), `terraform/`, `cdk/` (all pending) |
+| `07-automation/` | `claude-ai/`, `n8n/` |
+| `08-career/` | `professional-profile/` (linkedin.md) |
+| `09-system-design/` | `01-fundamentals/` → `04-case-studies/` (all pending) |
 | `anki-aws-engineer.txt` | All Anki flashcard decks |
 | `ROADMAP.md` | 10-stage learning plan with progress tracking |
 | `CONTEXT.md` | Full style guide for notes and Anki format |
 
 ## Architecture Prototypes
 
-`00-software-engineering/architecture/tipos-arquitecturas/` contains minimal Flask Todo apps showing architecture styles side by side:
+`00-software-engineering/03-architecture/tipos-arquitecturas/` contains minimal Flask Todo apps showing architecture styles side by side:
 
 - `01-capas/` — Layered: `repository.py` (data) → `service.py` (logic) → `routes.py` (HTTP) → `app.py` (entry)
 - `02-monolito/` — Everything in a single `app.py`

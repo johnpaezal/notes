@@ -30,15 +30,15 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 ## Stage 1 — Fundamentos (Base de todo)
 *Sin esto, nada de lo demás tiene sentido*
 
-- [ ] **Linux** → `02-infrastructure/linux/`
+- [x] **Linux** → `02-infrastructure/linux/`
   - Comandos esenciales, permisos, procesos, systemd
-- [ ] **Bash** → `02-infrastructure/bash/`
+- [x] **Bash** → `02-infrastructure/bash/`
   - Scripts, variables, condicionales, loops, cron
 - [x] **Redes básicas** → `02-infrastructure/networking/`
   - Fundamentos, OSI, TCP/IP, IP+Subnets, DNS, HTTP/HTTPS, Puertos, Seguridad
-- [ ] **Git + GitHub** → `05-tooling/git/`
+- [x] **Git + GitHub** → `05-tooling/git/`
   - Commits, branches, merge, rebase, pull requests
-- [ ] **JSON / YAML** → `05-tooling/json-yaml/`
+- [x] **JSON / YAML** → `05-tooling/json-yaml/`
   - Sintaxis, validación, uso en configs
 
 ---
@@ -46,11 +46,11 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 ## Stage 2 — Contenedores y DevOps
 *Lo que usan todos los equipos modernos*
 
-- [ ] **Docker** → `02-infrastructure/docker/`
+- [x] **Docker** → `02-infrastructure/docker/`
   - Imágenes, contenedores, Dockerfile, docker-compose
-- [ ] **CI/CD** → `05-tooling/ci-cd/`
+- [x] **CI/CD** → `05-tooling/ci-cd/`
   - GitHub Actions, pipelines, deploy automático
-- [ ] **Kubernetes** → `02-infrastructure/kubernetes/`
+- [x] **Kubernetes** → `02-infrastructure/kubernetes/`
   - Pods, deployments, services, ingress
 
 ---
@@ -60,11 +60,11 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 
 - [ ] **Python avanzado** → `01-languages/python/` ✓ (notas completas)
   - Revisar y practicar con proyectos
-- [ ] **FastAPI** → `01-languages/python/07-fastapi/`
+- [x] **FastAPI** → `01-languages/python/07-fastapi/`
   - Routing, modelos, autenticación, deploy
 - [ ] **Java avanzado** → `01-languages/java/` ✓ (notas completas)
   - Revisar y practicar con proyectos
-- [ ] **Spring Boot** → `01-languages/java/07-spring-boot/`
+- [x] **Spring Boot** → `01-languages/java/07-spring-boot/`
   - REST API, JPA, seguridad, testing, deploy
 
 ---
@@ -84,21 +84,21 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 ## Stage 5 — AWS Core ⭐
 *El corazón del perfil*
 
-- [ ] **IAM + Core** → `06-cloud/aws/01-core/`
+- [x] **IAM + Core** → `06-cloud/aws/01-core/`
   - Usuarios, roles, policies, regiones, availability zones
-- [ ] **Compute** → `06-cloud/aws/02-compute/`
+- [x] **Compute** → `06-cloud/aws/02-compute/`
   - EC2, Lambda, ECS, EKS
-- [ ] **Storage** → `06-cloud/aws/03-storage/`
+- [x] **Storage** → `06-cloud/aws/03-storage/`
   - S3, EBS, EFS
-- [ ] **Database** → `06-cloud/aws/04-database/`
+- [x] **Database** → `06-cloud/aws/04-database/`
   - RDS, DynamoDB, ElastiCache
-- [ ] **Networking** → `06-cloud/aws/05-networking/`
+- [x] **Networking** → `06-cloud/aws/05-networking/`
   - VPC, subnets, security groups, ALB, Route53
-- [ ] **Messaging** → `06-cloud/aws/06-messaging/`
+- [x] **Messaging** → `06-cloud/aws/06-messaging/`
   - SQS, SNS, EventBridge
-- [ ] **DevOps AWS** → `06-cloud/aws/07-devops/`
+- [x] **DevOps AWS** → `06-cloud/aws/07-devops/`
   - CloudWatch, CodePipeline, CodeBuild
-- [ ] **Security AWS** → `06-cloud/aws/08-security/`
+- [x] **Security AWS** → `06-cloud/aws/08-security/`
   - IAM avanzado, KMS, Secrets Manager
 
 ---
@@ -106,9 +106,9 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 ## Stage 6 — Infrastructure as Code ⭐
 *Diferenciador clave en entrevistas*
 
-- [ ] **Terraform** → `06-cloud/terraform/`
+- [x] **Terraform** → `06-cloud/terraform/`
   - Providers, resources, variables, modules, state
-- [ ] **AWS CDK** → `06-cloud/cdk/`
+- [x] **AWS CDK** → `06-cloud/cdk/`
   - Stacks, constructs, deploy con Python o Java
 
 ---
@@ -116,13 +116,13 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 ## Stage 7 — System Design
 *Entrevistas técnicas y trabajo real*
 
-- [ ] **Fundamentos** → `09-system-design/01-fundamentals/`
+- [x] **Fundamentos** → `09-system-design/01-fundamentals/`
   - Escalabilidad, disponibilidad, latencia, CAP theorem
-- [ ] **Componentes** → `09-system-design/02-components/`
+- [x] **Componentes** → `09-system-design/02-components/`
   - Load balancer, cache, CDN, message queues, DB sharding
-- [ ] **Patrones** → `09-system-design/03-patterns/`
+- [x] **Patrones** → `09-system-design/03-patterns/`
   - Microservicios, event-driven, serverless, CQRS
-- [ ] **Casos reales** → `09-system-design/04-case-studies/`
+- [x] **Casos reales** → `09-system-design/04-case-studies/`
   - Diseñar: URL shortener, sistema de notificaciones, API escalable
 
 ---
@@ -130,9 +130,9 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 ## Stage 8 — Testing y Buenas Prácticas
 *Código profesional y mantenible*
 
-- [ ] **Testing** → `05-tooling/testing/`
+- [x] **Testing** → `05-tooling/testing/`
   - Unit, integration, e2e, mocking
-- [ ] **Best Practices** → `05-tooling/best-practices/`
+- [x] **Best Practices** → `05-tooling/best-practices/`
   - .env, .gitignore, secrets, estructura de proyectos
 - [ ] **README profesional** → `08-career/professional-profile/`
 
@@ -141,8 +141,9 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 ## Stage 9 — Certificación AWS ⭐
 *Validación formal del perfil*
 
-- [ ] **AWS Cloud Practitioner** (CLF-C02) — entry level, primero
-- [ ] **AWS Solutions Architect Associate** (SAA-C03) — el real para engineer
+- [x] **AWS Cloud Practitioner** (CLF-C02) — entry level, primero → `06-cloud/aws/certifications/clf-c02/`
+- [x] **AWS Solutions Architect Associate** (SAA-C03) — el real para engineer → `06-cloud/aws/certifications/saa-c03/`
+- [x] **AWS Data Engineer Associate** (DEA-C01) → `06-cloud/aws/certifications/dea-c01/`
 
 ---
 
@@ -162,14 +163,14 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 
 ## Frontend (paralelo, no bloqueante)
 
-- [ ] **Angular** → `04-web/angular/`
+- [x] **Angular** → `04-web/angular/`
   - Componentes, routing, servicios, HTTP, formularios
 
 ---
 
 ## Automation (cuando tengas tiempo)
 
-- [ ] **N8N** → `07-automation/n8n/`
+- [x] **N8N** → `07-automation/n8n/`
 - [ ] **Claude AI** → `07-automation/claude-ai/` (notas básicas existentes)
 
 ---
@@ -192,29 +193,37 @@ Conseguir un puesto como **AWS Engineer** con perfil full-stack backend.
 | 0 | Documentation | ✅ Notas completas |
 | 0 | Message Queues | ✅ Notas completas |
 | 0 | Architecture | ✅ Notas completas |
-| 1 | Linux | ⬜ Pendiente |
-| 1 | Bash | ⬜ Pendiente |
+| 1 | Linux | ✅ Notas completas |
+| 1 | Bash | ✅ Notas completas |
 | 1 | Redes | ✅ Notas completas |
-| 1 | Git | ⬜ Pendiente |
-| 1 | JSON/YAML | ⬜ Pendiente |
-| 2 | Docker | ⬜ Pendiente |
-| 2 | CI/CD | ⬜ Pendiente |
-| 2 | Kubernetes | ⬜ Pendiente |
+| 1 | Git | ✅ Notas completas |
+| 1 | JSON/YAML | ✅ Notas completas |
+| 2 | Docker | ✅ Notas completas |
+| 2 | CI/CD | ✅ Notas completas |
+| 2 | Kubernetes | ✅ Notas completas |
 | 3 | Python | ✅ Notas completas |
-| 3 | FastAPI | ⬜ Pendiente |
+| 3 | FastAPI | ✅ Notas completas |
 | 3 | Java | ✅ Notas completas |
-| 3 | Spring Boot | ⬜ Pendiente |
+| 3 | Spring Boot | ✅ Notas completas |
 | 4 | SQL | ✅ Notas completas |
 | 4 | Data Modeling | ✅ Notas completas |
 | 4 | NoSQL (DynamoDB, Redis) | ✅ Notas completas |
-| 5 | AWS Core | ⬜ Pendiente |
-| 6 | Terraform | ⬜ Pendiente |
-| 6 | CDK | ⬜ Pendiente |
-| 7 | System Design | ⬜ Pendiente |
-| 8 | Testing | ⬜ Pendiente |
-| 8 | Best Practices | ⬜ Pendiente |
-| 9 | AWS Cloud Practitioner cert | ⬜ Pendiente |
-| 9 | AWS SAA cert | ⬜ Pendiente |
+| 5 | AWS Core | ✅ Notas completas |
+| 5 | AWS Compute (EC2, Lambda) | ✅ Notas completas |
+| 5 | AWS Storage (S3) | ✅ Notas completas |
+| 5 | AWS Database (RDS, DynamoDB) | ✅ Notas completas |
+| 5 | AWS Networking (VPC) | ✅ Notas completas |
+| 5 | AWS Messaging (SQS, SNS) | ✅ Notas completas |
+| 5 | AWS DevOps (ECS, ECR) | ✅ Notas completas |
+| 5 | AWS Security | ✅ Notas completas |
+| 6 | Terraform | ✅ Notas completas |
+| 6 | CDK | ✅ Notas completas |
+| 7 | System Design | ✅ Notas completas |
+| 8 | Testing | ✅ Notas completas |
+| 8 | Best Practices | ✅ Notas completas |
+| 9 | AWS Cloud Practitioner cert (CLF-C02) | ✅ Notas completas |
+| 9 | AWS Solutions Architect Associate (SAA-C03) | ✅ Notas completas |
+| 9 | AWS Data Engineer Associate (DEA-C01) | ✅ Notas completas |
 | 10 | GitHub perfil | ⬜ Pendiente |
 | 10 | LinkedIn | ⬜ Pendiente |
 | 10 | Proyecto 1 — FastAPI | ⬜ Pendiente |

@@ -201,3 +201,584 @@ AwsEngineer::Infraestructura::Docker	MiPlantilla	¿Diferencia entre bind mount y
 AwsEngineer::Infraestructura::Docker	MiPlantilla	¿Qué es Docker Compose?	Herramienta para definir y levantar aplicaciones multi-contenedor con un solo archivo YAML (docker-compose.yml).
 AwsEngineer::Infraestructura::Docker	MiPlantilla	¿Cuáles son los comandos esenciales de Docker Compose?	<ul><li><b>docker compose up -d</b> – levantar en background</li><li><b>docker compose down</b> – detener y eliminar contenedores</li><li><b>docker compose logs</b> – ver logs</li><li><b>docker compose ps</b> – estado de servicios</li><li><b>docker compose build</b> – reconstruir imágenes</li></ul>
 AwsEngineer::Infraestructura::Docker	MiPlantilla	¿Para qué sirve .dockerignore?	Excluye archivos del build context — reduce el tamaño de la imagen y evita enviar secretos (.env, .git, node_modules) al daemon de Docker.
+
+# ============================================================
+# SUBMAZO: AwsEngineer::Backend::FastAPI
+# ============================================================
+
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Qué es FastAPI?	Framework Python moderno para construir APIs con validación automática de datos (Pydantic), documentación Swagger/ReDoc integrada y soporte async nativo.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Qué es Pydantic en el contexto de FastAPI?	Librería de validación de datos que usa FastAPI internamente. Define los modelos de request/response con tipos Python.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se corre FastAPI en desarrollo?	<pre>uvicorn main:app --reload</pre>Docs en: /docs (Swagger) y /redoc (ReDoc).
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Diferencia entre FastAPI, Flask y Django?	<table border="1" cellpadding="6"><tr><th></th><th>FastAPI</th><th>Flask</th><th>Django</th></tr><tr><td>Rendimiento</td><td>Alto (async)</td><td>Medio</td><td>Medio</td></tr><tr><td>Validación auto</td><td>Sí (Pydantic)</td><td>No</td><td>Parcial</td></tr><tr><td>Docs automáticas</td><td>Sí</td><td>No</td><td>No</td></tr></table>
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se define un path parameter tipado en FastAPI?	<pre>@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    return {"id": user_id}</pre>Si el valor no es int → 422 automático.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se definen query parameters en FastAPI?	<pre>@app.get("/users")
+def get_users(page: int = 1, limit: int = 10):
+    return {"page": page, "limit": limit}</pre>Parámetros con default → opcionales. Sin default → obligatorios.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se valida el body de un request en FastAPI?	Definiendo un modelo Pydantic y usándolo como parámetro:<pre>class UserCreate(BaseModel):
+    name: str
+    email: str
+
+@app.post("/users")
+def create_user(user: UserCreate):
+    ...</pre>
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Para qué sirve response_model en FastAPI?	Filtra los campos que se devuelven al cliente. Solo incluye los campos definidos en el modelo de respuesta, ocultando datos internos como password_hash.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se lanza un error HTTP en FastAPI?	<pre>raise HTTPException(
+    status_code=404,
+    detail="User not found"
+)</pre>
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cuándo usar async def vs def en FastAPI?	<ul><li><b>async def</b> – cuando el endpoint llama código async (httpx, base de datos async)</li><li><b>def</b> – cuando usa código sync normal (SQLAlchemy clásico, operaciones CPU)</li></ul>
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Qué es Depends en FastAPI?	Sistema de inyección de dependencias. Permite reutilizar lógica entre endpoints (autenticación, paginación, sesión DB) sin repetir código.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se divide una app FastAPI en módulos?	Con APIRouter:<pre># routers/users.py
+router = APIRouter(prefix="/users")
+
+# main.py
+app.include_router(users.router)</pre>
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se agrega CORS en FastAPI?	<pre>from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)</pre>
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Qué son los Background Tasks en FastAPI?	Tareas que se ejecutan después de devolver la respuesta al cliente. Útiles para enviar emails, logs o notificaciones sin bloquear el request.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cómo se corre FastAPI en producción?	<pre>gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000</pre>Nunca usar --reload en producción.
+AwsEngineer::Backend::FastAPI	MiPlantilla	¿Cuál es la estructura recomendada de un proyecto FastAPI?	<ul><li>main.py – app + routers</li><li>config.py – Settings con pydantic-settings</li><li>database.py – engine, sesión, Base</li><li>models/ – SQLAlchemy models</li><li>schemas/ – Pydantic schemas</li><li>routers/ – APIRouter por recurso</li><li>dependencies.py – Depends reutilizables</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Infraestructura::Linux
+# ============================================================
+
+AwsEngineer::Infraestructura::Linux	MiPlantilla	¿Qué contiene el directorio /etc en Linux?	Archivos de configuración del sistema.
+AwsEngineer::Infraestructura::Linux	MiPlantilla	¿Qué hace chmod 755?	<pre>chmod 755 archivo</pre>Owner: rwx (7). Group y Others: r-x (5).
+AwsEngineer::Infraestructura::Linux	MiPlantilla	¿Cómo ver logs de un servicio systemd en tiempo real?	<pre>journalctl -u nginx -f</pre>
+AwsEngineer::Infraestructura::Linux	MiPlantilla	¿Diferencia entre kill y kill -9?	<ul><li><b>kill (SIGTERM)</b> – Pide al proceso terminar limpiamente</li><li><b>kill -9 (SIGKILL)</b> – Termina forzosamente; no puede ser capturado</li></ul>
+AwsEngineer::Infraestructura::Linux	MiPlantilla	¿Cómo agregar un usuario al grupo docker?	<pre>usermod -aG docker alice</pre>
+AwsEngineer::Infraestructura::Linux	MiPlantilla	¿Qué hace tail -f?	Muestra el final del archivo y sigue actualizando en tiempo real. Útil para monitorear logs.
+AwsEngineer::Infraestructura::Linux	MiPlantilla	¿Cómo buscar la palabra "error" recursivamente en /var/log/?	<pre>grep -r "error" /var/log/</pre>
+
+# ============================================================
+# MAZO: AwsEngineer::Infraestructura::Bash
+# ============================================================
+
+AwsEngineer::Infraestructura::Bash	MiPlantilla	¿Qué hace set -euo pipefail?	<ul><li><b>-e</b> – Sale si un comando falla</li><li><b>-u</b> – Error si variable no definida</li><li><b>-o pipefail</b> – Falla si cualquier comando del pipe falla</li></ul>
+AwsEngineer::Infraestructura::Bash	MiPlantilla	¿Diferencia entre $@ y $#?	<ul><li><b>$@</b> – Todos los argumentos como palabras separadas</li><li><b>$#</b> – Número de argumentos recibidos</li></ul>
+AwsEngineer::Infraestructura::Bash	MiPlantilla	¿Cómo iterar sobre líneas de un archivo en Bash?	<pre>while IFS= read -r line; do
+  echo "$line"
+done < input.txt</pre>
+AwsEngineer::Infraestructura::Bash	MiPlantilla	¿Cómo obtener la longitud de un string en Bash?	<pre>str="hola"
+echo ${#str}  # → 4</pre>
+AwsEngineer::Infraestructura::Bash	MiPlantilla	¿Qué hace trap cleanup EXIT?	Ejecuta la función cleanup cuando el script termina (con éxito o por error). Útil para limpiar archivos temporales.
+
+# ============================================================
+# MAZO: AwsEngineer::Infraestructura::Kubernetes
+# ============================================================
+
+AwsEngineer::Infraestructura::Kubernetes	MiPlantilla	¿Qué es un Pod en Kubernetes?	Unidad mínima de despliegue. Uno o más contenedores que comparten red y almacenamiento.
+AwsEngineer::Infraestructura::Kubernetes	MiPlantilla	¿Diferencia entre Deployment y ReplicaSet?	<ul><li><b>ReplicaSet</b> – Mantiene N réplicas corriendo</li><li><b>Deployment</b> – Gestiona ReplicaSets; permite rollouts y rollbacks</li></ul>
+AwsEngineer::Infraestructura::Kubernetes	MiPlantilla	¿Qué tipos de Service existen en K8s?	<ul><li><b>ClusterIP</b> – Solo interno (default)</li><li><b>NodePort</b> – Expone en IP:puerto del nodo</li><li><b>LoadBalancer</b> – Provisiona LB en la nube</li><li><b>ExternalName</b> – Alias DNS externo</li></ul>
+AwsEngineer::Infraestructura::Kubernetes	MiPlantilla	¿Qué significa CrashLoopBackOff?	El contenedor sigue fallando al arrancar y K8s lo reinicia repetidamente.
+AwsEngineer::Infraestructura::Kubernetes	MiPlantilla	¿Diferencia entre Request y Limit en K8s?	<ul><li><b>Request</b> – Mínimo garantizado; el Scheduler lo usa para elegir nodo</li><li><b>Limit</b> – Máximo permitido; el contenedor se mata si supera la memoria</li></ul>
+AwsEngineer::Infraestructura::Kubernetes	MiPlantilla	¿Cómo hacer debug de un Pod en K8s?	<pre>kubectl logs my-pod -f
+kubectl exec -it my-pod -- bash
+kubectl describe pod my-pod</pre>
+AwsEngineer::Infraestructura::Kubernetes	MiPlantilla	¿Qué hace kubectl rollout undo?	Revierte el Deployment a la versión anterior (o a una revisión específica con --to-revision=N).
+
+# ============================================================
+# MAZO: AwsEngineer::Frontend::Angular
+# ============================================================
+
+AwsEngineer::Frontend::Angular	MiPlantilla	¿Qué es Angular?	Framework TypeScript de Google para SPAs. Incluye routing, DI, HTTP client y formularios de forma integrada.
+AwsEngineer::Frontend::Angular	MiPlantilla	¿Cuáles son los 4 tipos de data binding en Angular?	<ul><li><b>Interpolación</b> – {{ value }}</li><li><b>Property binding</b> – [src]="url"</li><li><b>Event binding</b> – (click)="fn()"</li><li><b>Two-way</b> – [(ngModel)]="name"</li></ul>
+AwsEngineer::Frontend::Angular	MiPlantilla	¿Diferencia entre *ngIf y *ngFor?	<ul><li><b>*ngIf</b> – Muestra u oculta un elemento según condición booleana</li><li><b>*ngFor</b> – Repite elemento por cada item de una lista</li></ul>
+AwsEngineer::Frontend::Angular	MiPlantilla	¿Qué es un Observable en RxJS?	Stream de valores asíncronos. Se suscribe con .subscribe() y se transforma con pipe(map(), filter()...).
+AwsEngineer::Frontend::Angular	MiPlantilla	¿Para qué sirve providedIn: 'root' en un Service?	Hace que el servicio sea singleton disponible en toda la app sin registrarlo en módulos.
+AwsEngineer::Frontend::Angular	MiPlantilla	¿Qué es un Route Guard (canActivate)?	Protege rutas verificando condiciones (ej. autenticación) antes de activar el componente. Retorna boolean.
+
+# ============================================================
+# MAZO: AwsEngineer::Tooling::Git
+# ============================================================
+
+AwsEngineer::Tooling::Git	MiPlantilla	¿Diferencia entre git merge y git rebase?	<ul><li><b>merge</b> – Preserva historial de rama; crea merge commit</li><li><b>rebase</b> – Reescribe commits encima de la rama base; historial lineal</li></ul>
+AwsEngineer::Tooling::Git	MiPlantilla	¿Diferencia entre git revert y git reset?	<ul><li><b>revert</b> – Crea nuevo commit que deshace cambios (seguro en ramas compartidas)</li><li><b>reset</b> – Reescribe historial (solo usar en commits no publicados)</li></ul>
+AwsEngineer::Tooling::Git	MiPlantilla	¿Cuál es el formato de Conventional Commits?	<pre>tipo(scope): descripción
+
+feat(auth): add JWT login endpoint
+fix(users): handle null email</pre>
+AwsEngineer::Tooling::Git	MiPlantilla	¿Qué es GitHub Flow?	Flujo simplificado: branch desde main → commits → PR → review + CI → merge a main → deploy inmediato.
+AwsEngineer::Tooling::Git	MiPlantilla	¿Qué hace git stash?	Guarda temporalmente los cambios del working directory sin commitearlos. git stash pop los restaura.
+
+# ============================================================
+# MAZO: AwsEngineer::Tooling::YAML
+# ============================================================
+
+AwsEngineer::Tooling::YAML	MiPlantilla	¿Diferencia principal entre JSON y YAML?	<table border="1" cellpadding="6"><tr><th>JSON</th><th>YAML</th></tr><tr><td>Sin comentarios</td><td>Soporta # comentarios</td></tr><tr><td>APIs y datos</td><td>Config files, K8s, CI/CD</td></tr><tr><td>Sintaxis estricta</td><td>Más flexible, más gotchas</td></tr></table>
+AwsEngineer::Tooling::YAML	MiPlantilla	¿Cuál es el gotcha de YAML con booleanos?	Valores como NO, on, off, yes se interpretan como boolean en YAML 1.1. Solución: siempre entrecomillarlos: "NO", "on".
+AwsEngineer::Tooling::YAML	MiPlantilla	¿Cómo leer un YAML en Python de forma segura?	<pre>import yaml
+with open("config.yaml") as f:
+    config = yaml.safe_load(f)  # nunca yaml.load()</pre>
+
+# ============================================================
+# MAZO: AwsEngineer::Tooling::CICD
+# ============================================================
+
+AwsEngineer::Tooling::CICD	MiPlantilla	¿Diferencia entre CI, Continuous Delivery y Continuous Deployment?	<ul><li><b>CI</b> – Build + test automático en cada push</li><li><b>Delivery</b> – Deploy automático a staging; prod requiere aprobación manual</li><li><b>Deployment</b> – Deploy automático a prod en cada build verde</li></ul>
+AwsEngineer::Tooling::CICD	MiPlantilla	¿Por qué hacer fail-fast en un pipeline CI?	Las validaciones baratas (lint, unit tests) deben ir primero para no desperdiciar tiempo en stages costosos si algo está roto.
+AwsEngineer::Tooling::CICD	MiPlantilla	¿Cómo usar un secreto en GitHub Actions?	<pre>env:
+  DB_URL: ${{ secrets.DATABASE_URL }}</pre>Se configuran en Settings → Secrets and variables → Actions.
+
+# ============================================================
+# MAZO: AwsEngineer::Tooling::Testing
+# ============================================================
+
+AwsEngineer::Tooling::Testing	MiPlantilla	¿Qué es la pirámide de testing?	<ul><li><b>Unit (70%)</b> – Rápidos, aislados, sin I/O</li><li><b>Integration (20%)</b> – Múltiples componentes juntos</li><li><b>E2E (10%)</b> – Flujo completo usuario→BD</li></ul>
+AwsEngineer::Tooling::Testing	MiPlantilla	¿Qué es el patrón AAA en testing?	<ul><li><b>Arrange</b> – Preparar datos y dependencias</li><li><b>Act</b> – Llamar al código bajo prueba</li><li><b>Assert</b> – Verificar el resultado</li></ul>
+AwsEngineer::Tooling::Testing	MiPlantilla	¿Diferencia entre Mock y patch en Python?	<ul><li><b>MagicMock</b> – Objeto falso que registra llamadas y retorna valores configurados</li><li><b>patch</b> – Reemplaza un import real con un mock durante el test</li></ul>
+AwsEngineer::Tooling::Testing	MiPlantilla	¿Cómo probar un endpoint FastAPI sin levantar servidor?	<pre>from fastapi.testclient import TestClient
+client = TestClient(app)
+response = client.get("/users")
+assert response.status_code == 200</pre>
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::AWS::Core
+# ============================================================
+
+AwsEngineer::Cloud::AWS::Core	MiPlantilla	¿Qué es una Availability Zone en AWS?	Data center aislado dentro de una Region. Desplegar en múltiples AZs da alta disponibilidad y tolerancia a fallos.
+AwsEngineer::Cloud::AWS::Core	MiPlantilla	¿Qué es el Shared Responsibility Model?	<ul><li><b>AWS</b> – Hardware, red física, hipervisor, servicios gestionados</li><li><b>Cliente</b> – OS, código, IAM, cifrado, Security Groups</li></ul>
+AwsEngineer::Cloud::AWS::Core	MiPlantilla	¿Cuándo usar IAM Role vs IAM User?	Roles para servicios (EC2, Lambda, ECS). Users para personas. Nunca poner access keys hardcodeados en instancias.
+AwsEngineer::Cloud::AWS::Core	MiPlantilla	¿Qué formato tiene un ARN?	<pre>arn:aws:servicio:region:cuenta:recurso
+arn:aws:s3:::mi-bucket
+arn:aws:iam::123456:user/alice</pre>
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::AWS::Compute
+# ============================================================
+
+AwsEngineer::Cloud::AWS::Compute	MiPlantilla	¿Modelos de precio de EC2?	<ul><li><b>On-Demand</b> – Por hora, sin compromiso</li><li><b>Reserved</b> – 1-3 años, hasta 72% descuento</li><li><b>Spot</b> – Capacidad libre, hasta 90% descuento; puede interrumpirse</li></ul>
+AwsEngineer::Cloud::AWS::Compute	MiPlantilla	¿Qué es un Security Group en EC2?	Firewall stateful a nivel de instancia. Solo reglas Allow. El tráfico de retorno se permite automáticamente.
+AwsEngineer::Cloud::AWS::Compute	MiPlantilla	¿Qué es AWS Lambda?	Función serverless que corre en respuesta a eventos. Sin gestión de servidores. Billing por request + duración (ms).
+AwsEngineer::Cloud::AWS::Compute	MiPlantilla	¿Qué es un Cold Start en Lambda?	Primera invocación inicializa el contenedor → latencia extra. Siguientes invocaciones reutilizan el contenedor (warm start).
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::AWS::Storage
+# ============================================================
+
+AwsEngineer::Cloud::AWS::Storage	MiPlantilla	¿Qué es un Pre-signed URL en S3?	URL temporal que permite acceso a un objeto privado sin hacer el bucket público. Tiene tiempo de expiración configurable.
+AwsEngineer::Cloud::AWS::Storage	MiPlantilla	¿Cuándo usar S3 Standard-IA vs Glacier?	<ul><li><b>Standard-IA</b> – Acceso infrecuente pero instantáneo cuando se necesita</li><li><b>Glacier</b> – Archivo a largo plazo; recuperación en minutos u horas</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::AWS::Database
+# ============================================================
+
+AwsEngineer::Cloud::AWS::Database	MiPlantilla	¿Diferencia entre Multi-AZ y Read Replica en RDS?	<ul><li><b>Multi-AZ</b> – Standby síncrono; failover automático ~60s; no sirve tráfico</li><li><b>Read Replica</b> – Copia asíncrona para lecturas; sin failover automático</li></ul>
+AwsEngineer::Cloud::AWS::Database	MiPlantilla	¿Cuándo elegir DynamoDB sobre RDS?	Patrones de acceso conocidos, escala horizontal, latencia &lt;10ms, arquitectura serverless. RDS para queries complejas y relaciones.
+AwsEngineer::Cloud::AWS::Database	MiPlantilla	¿Qué es la Partition Key en DynamoDB?	Clave que determina en qué partición se almacena el item. Debe tener alta cardinalidad para distribución uniforme.
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::AWS::Networking
+# ============================================================
+
+AwsEngineer::Cloud::AWS::Networking	MiPlantilla	¿Diferencia entre Public y Private Subnet?	<ul><li><b>Public</b> – Tiene ruta al Internet Gateway; recursos pueden tener IP pública</li><li><b>Private</b> – Sin ruta directa a internet; acceso saliente solo via NAT Gateway</li></ul>
+AwsEngineer::Cloud::AWS::Networking	MiPlantilla	¿Diferencia entre Security Group y NACL?	<table border="1" cellpadding="6"><tr><th>Security Group</th><th>NACL</th></tr><tr><td>Nivel instancia</td><td>Nivel subnet</td></tr><tr><td>Stateful</td><td>Stateless</td></tr><tr><td>Solo Allow</td><td>Allow + Deny</td></tr></table>
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::AWS::Messaging
+# ============================================================
+
+AwsEngineer::Cloud::AWS::Messaging	MiPlantilla	¿Diferencia entre SQS Standard y FIFO?	<ul><li><b>Standard</b> – Throughput ilimitado; at-least-once; orden best-effort</li><li><b>FIFO</b> – Exactly-once; orden estricto; 300 msg/s</li></ul>
+AwsEngineer::Cloud::AWS::Messaging	MiPlantilla	¿Para qué sirve el patrón SNS + SQS fan-out?	Un evento en SNS se entrega a múltiples colas SQS simultáneamente. Varios servicios consumen el mismo evento de forma independiente.
+AwsEngineer::Cloud::AWS::Messaging	MiPlantilla	¿Qué es una Dead Letter Queue (DLQ)?	Cola que recibe mensajes que fallaron su procesamiento N veces. Permite inspeccionar y reprocesar mensajes problemáticos.
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::AWS::Seguridad
+# ============================================================
+
+AwsEngineer::Cloud::AWS::Seguridad	MiPlantilla	¿Qué es AWS Secrets Manager?	Servicio para almacenar y rotar secretos (passwords, API keys) de forma segura. Las apps los leen via SDK en runtime.
+AwsEngineer::Cloud::AWS::Seguridad	MiPlantilla	¿Qué registra AWS CloudTrail?	Todas las llamadas a la API de AWS: quién hizo qué, cuándo y desde dónde. Audit log completo del account.
+AwsEngineer::Cloud::AWS::Seguridad	MiPlantilla	¿Qué es AWS GuardDuty?	Detección de amenazas con ML que analiza CloudTrail, VPC Flow Logs y DNS. Detecta anomalías automáticamente.
+
+# ============================================================
+# MAZO: AwsEngineer::Cloud::Terraform
+# ============================================================
+
+AwsEngineer::Cloud::Terraform	MiPlantilla	¿Cuál es el flujo básico de Terraform?	<ul><li><b>init</b> – Descarga providers, inicializa backend</li><li><b>plan</b> – Preview de cambios (dry run)</li><li><b>apply</b> – Aplica cambios en la nube</li><li><b>destroy</b> – Elimina todos los recursos gestionados</li></ul>
+AwsEngineer::Cloud::Terraform	MiPlantilla	¿Para qué sirve el state en Terraform?	Mapea los recursos declarados en .tf con los recursos reales en la nube. Sin él Terraform no sabe qué ya existe.
+AwsEngineer::Cloud::Terraform	MiPlantilla	¿Diferencia entre count y for_each en Terraform?	<ul><li><b>count</b> – Crea N recursos idénticos indexados por número</li><li><b>for_each</b> – Itera sobre map o set; cada recurso tiene una key única</li></ul>
+AwsEngineer::Cloud::Terraform	MiPlantilla	¿Por qué usar remote state con S3 + DynamoDB?	S3 guarda el state compartido entre el equipo. DynamoDB provee locking para evitar que dos runs simultáneos corrompan el state.
+AwsEngineer::Cloud::Terraform	MiPlantilla	¿Qué es un módulo en Terraform?	Conjunto reutilizable de recursos en su propio directorio. Se invoca con el bloque module {} pasando variables de input.
+
+# ============================================================
+# MAZO: AwsEngineer::SystemDesign
+# ============================================================
+
+AwsEngineer::SystemDesign	MiPlantilla	¿Diferencia entre escalabilidad vertical y horizontal?	<ul><li><b>Vertical</b> – Máquina más potente (más CPU/RAM). Tiene límite físico.</li><li><b>Horizontal</b> – Más máquinas detrás de un LB. Escala sin límite teórico.</li></ul>
+AwsEngineer::SystemDesign	MiPlantilla	¿Qué es el Teorema CAP?	Un sistema distribuido solo puede garantizar 2 de 3: Consistencia, Disponibilidad, Tolerancia a Particiones.
+AwsEngineer::SystemDesign	MiPlantilla	¿Qué es la estrategia Cache-Aside?	<ul><li>App consulta cache primero</li><li>Cache miss → consulta DB → guarda en cache con TTL</li><li>Cache hit → retorna directo sin tocar DB</li></ul>
+AwsEngineer::SystemDesign	MiPlantilla	¿Qué es el patrón Circuit Breaker?	Patrón que bloquea llamadas a un servicio fallando para evitar cascada de errores. Estados: Closed → Open → Half-Open.
+AwsEngineer::SystemDesign	MiPlantilla	¿Qué es CQRS?	Command Query Responsibility Segregation: modelos separados para escrituras (commands) y lecturas (queries).
+AwsEngineer::SystemDesign	MiPlantilla	¿Por qué los consumers de colas deben ser idempotentes?	Las colas garantizan at-least-once delivery: un mensaje puede entregarse más de una vez. Si el consumer no es idempotente, puede duplicar efectos.
+AwsEngineer::SystemDesign	MiPlantilla	¿Estimación de tráfico para un URL shortener?	<ul><li>100M escrituras/día ≈ 1,200 RPS</li><li>10B lecturas/día ≈ 115,000 RPS</li><li>Ratio 10,000:1 lectura/escritura → cachear agresivamente</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Backend::SpringBoot
+# ============================================================
+
+AwsEngineer::Backend::SpringBoot	MiPlantilla	¿Qué hace @SpringBootApplication?	Combina @Configuration + @EnableAutoConfiguration + @ComponentScan. Es el punto de entrada de la aplicación.
+AwsEngineer::Backend::SpringBoot	MiPlantilla	¿Diferencia entre @RestController y @Controller?	@RestController = @Controller + @ResponseBody. Todos los métodos retornan JSON directamente sin pasar por una vista.
+AwsEngineer::Backend::SpringBoot	MiPlantilla	¿Para qué sirve JpaRepository?	Interfaz que genera automáticamente CRUD (findById, save, delete, findAll) y permite derived queries por nombre de método.
+AwsEngineer::Backend::SpringBoot	MiPlantilla	¿Por qué no retornar entidades JPA directamente desde el controller?	Las entidades pueden exponer datos sensibles, causar lazy-loading exceptions y acoplan la API al modelo de BD. Usar DTOs.
+AwsEngineer::Backend::SpringBoot	MiPlantilla	¿Cómo probar un controller sin levantar servidor en Spring Boot?	<pre>@WebMvcTest(UserController.class)
+class Test {
+  @Autowired MockMvc mockMvc;
+  @MockBean UserService userService;
+}</pre>
+
+# ============================================================
+# SUBMAZO: Docker::Basics
+# ============================================================
+AwsEngineer::Docker::Basics	MiPlantilla	¿Qué es Docker?	Herramienta para construir y ejecutar aplicaciones en contenedores aislados.
+AwsEngineer::Docker::Basics	MiPlantilla	¿Qué diferencia hay entre imagen y contenedor en Docker?	<table border="1" cellpadding="6"><tr><th>Imagen</th><th>Contenedor</th></tr><tr><td>Plantilla de solo lectura</td><td>Instancia en ejecución de una imagen</td></tr><tr><td>Se construye con Dockerfile</td><td>Se crea con docker run</td></tr></table>
+AwsEngineer::Docker::Basics	MiPlantilla	¿Qué es un layer en Docker?	Capa de sistema de archivos generada por cada instrucción del Dockerfile. Se cachea para acelerar builds.
+AwsEngineer::Docker::Basics	MiPlantilla	¿Cuáles son los comandos básicos para gestionar imágenes?	<pre>docker pull nginx        # descargar
+docker images            # listar
+docker rmi nginx         # eliminar
+docker build -t app:1.0 .
+docker tag app:1.0 app:latest</pre>
+AwsEngineer::Docker::Basics	MiPlantilla	¿Cuáles son los comandos básicos para gestionar contenedores?	<pre>docker run -d --name web nginx
+docker ps          # en ejecución
+docker ps -a       # todos
+docker stop web
+docker rm web</pre>
+AwsEngineer::Docker::Basics	MiPlantilla	¿Qué significa la opción -p en docker run?	Mapea un puerto del host al puerto del contenedor. Ej: -p 8080:80 → host:8080 llega a container:80.
+AwsEngineer::Docker::Basics	MiPlantilla	¿Para qué sirve la opción -e en docker run?	Inyecta una variable de entorno dentro del contenedor. Ej: -e DB_URL=postgres://...
+AwsEngineer::Docker::Basics	MiPlantilla	¿Cuáles son las instrucciones clave de un Dockerfile?	<ul><li><b>FROM</b> – imagen base</li><li><b>WORKDIR</b> – directorio de trabajo</li><li><b>COPY</b> – copiar archivos al imagen</li><li><b>RUN</b> – comando en build time</li><li><b>EXPOSE</b> – puerto que usa la app</li><li><b>CMD</b> – comando por defecto al iniciar</li><li><b>ENTRYPOINT</b> – comando fijo al iniciar</li></ul>
+AwsEngineer::Docker::Basics	MiPlantilla	¿Cuál es la diferencia entre CMD y ENTRYPOINT?	<table border="1" cellpadding="6"><tr><th>CMD</th><th>ENTRYPOINT</th></tr><tr><td>Comando por defecto, reemplazable en docker run</td><td>Comando fijo; CMD se vuelve su argumento</td></tr></table>
+AwsEngineer::Docker::Basics	MiPlantilla	¿Para qué sirve .dockerignore?	Excluye archivos del build context: evita copiar .env, .git, __pycache__, node_modules al imagen.
+
+# ============================================================
+# SUBMAZO: Docker::Compose
+# ============================================================
+AwsEngineer::Docker::Compose	MiPlantilla	¿Qué es Docker Compose?	Herramienta para definir y correr aplicaciones multi-contenedor con un archivo YAML.
+AwsEngineer::Docker::Compose	MiPlantilla	¿Qué es un servicio en docker-compose.yml?	Definición de un contenedor: imagen, puertos, variables de entorno, volúmenes y red.
+AwsEngineer::Docker::Compose	MiPlantilla	¿Cómo se define un servicio que construye desde Dockerfile local?	<pre>services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"</pre>
+AwsEngineer::Docker::Compose	MiPlantilla	¿Qué hace depends_on en Compose?	Define el orden de inicio de servicios. No espera a que el servicio esté listo (solo que el contenedor inició).
+AwsEngineer::Docker::Compose	MiPlantilla	¿Cómo se declara un volumen nombrado en Compose?	<pre>volumes:
+  pgdata:
+
+services:
+  db:
+    volumes:
+      - pgdata:/var/lib/postgresql/data</pre>
+AwsEngineer::Docker::Compose	MiPlantilla	¿Cuáles son los comandos principales de docker compose?	<ul><li><b>up -d</b> – iniciar en background</li><li><b>down</b> – detener y eliminar contenedores</li><li><b>logs -f</b> – ver logs en tiempo real</li><li><b>exec web bash</b> – abrir shell en servicio</li><li><b>ps</b> – estado de servicios</li><li><b>build</b> – reconstruir imágenes</li></ul>
+AwsEngineer::Docker::Compose	MiPlantilla	¿Cómo se comunican servicios en Compose sin configuración extra?	Compose crea una red bridge por defecto. Cada servicio es accesible por su nombre de servicio como hostname.
+AwsEngineer::Docker::Compose	MiPlantilla	¿Cómo se crea una red personalizada en Compose?	<pre>networks:
+  backend:
+
+services:
+  api:
+    networks: [backend]
+  db:
+    networks: [backend]</pre>
+
+# ============================================================
+# SUBMAZO: Docker::Advanced
+# ============================================================
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Qué es un multi-stage build en Docker?	Dockerfile con múltiples FROM. Etapas de build hacen trabajo pesado; la etapa final copia solo lo necesario para producción.
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Cuál es el beneficio principal de los multi-stage builds?	Imágenes finales más pequeñas: sin compiladores, dependencias de build ni archivos innecesarios.
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Cómo se copia un artefacto de una etapa anterior en multi-stage?	<pre>COPY --from=builder /install /usr/local</pre> Donde builder es el nombre de la etapa anterior (AS builder).
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Cómo se ejecuta un contenedor como usuario no-root?	<pre>RUN useradd -r -u 1001 appuser
+USER appuser</pre>
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Para qué sirve HEALTHCHECK en un Dockerfile?	Permite que el orquestador sepa si el contenedor está listo. Ej: <pre>HEALTHCHECK --interval=30s CMD curl -f http://localhost:8000/health || exit 1</pre>
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Cuáles son los modos de red de Docker?	<ul><li><b>bridge</b> – por defecto, contenedores se comunican por nombre</li><li><b>host</b> – comparte red del host (solo Linux)</li><li><b>none</b> – sin red</li><li><b>overlay</b> – multi-host para Docker Swarm</li></ul>
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Cuál es la diferencia entre named volume y bind mount?	<table border="1" cellpadding="6"><tr><th>Named Volume</th><th>Bind Mount</th></tr><tr><td>Gestionado por Docker</td><td>Ruta explícita del host</td></tr><tr><td>Mejor para bases de datos</td><td>Mejor para desarrollo (live reload)</td></tr></table>
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Cuáles son los comandos útiles para depurar contenedores?	<ul><li><code>docker logs -f name</code> – ver logs en tiempo real</li><li><code>docker exec -it name bash</code> – shell interactivo</li><li><code>docker inspect name</code> – metadata JSON completa</li><li><code>docker stats</code> – uso de CPU/memoria en vivo</li><li><code>docker system prune</code> – limpiar recursos no usados</li></ul>
+AwsEngineer::Docker::Advanced	MiPlantilla	¿Cómo hacer push de una imagen a ECR?	<pre>aws ecr get-login-password --region us-east-1 \
+  | docker login --username AWS --password-stdin &lt;account&gt;.dkr.ecr...
+docker tag myapp:1.0 &lt;account&gt;.dkr.ecr.../myapp:1.0
+docker push &lt;account&gt;.dkr.ecr.../myapp:1.0</pre>
+
+# ============================================================
+# MAZO: AwsEngineer::BestPractices::ProjectStructure
+# ============================================================
+
+AwsEngineer::BestPractices::ProjectStructure	MiPlantilla	¿Cuál es el patrón .env / .env.example?	<ul><li><b>.env</b> – Archivo local con secretos reales, <b>nunca</b> se commitea</li><li><b>.env.example</b> – Plantilla con valores de ejemplo, sí se commitea</li><li>Regla: <code>.env</code> siempre en <code>.gitignore</code></li></ul>
+AwsEngineer::BestPractices::ProjectStructure	MiPlantilla	¿Qué archivos deben estar en el .gitignore de todo proyecto?	<ul><li><code>.env</code> – secretos locales</li><li><code>__pycache__/</code>, <code>*.pyc</code>, <code>.venv/</code> – Python</li><li><code>node_modules/</code> – Node</li><li><code>.DS_Store</code> – macOS</li><li><code>*.log</code>, <code>dist/</code>, <code>build/</code> – artefactos</li><li><code>.terraform/</code>, <code>*.tfstate</code> – Terraform</li></ul>
+AwsEngineer::BestPractices::ProjectStructure	MiPlantilla	¿Diferencia entre src layout y flat layout en Python?	<table border="1" cellpadding="6"><tr><th>Src layout</th><th>Flat layout</th></tr><tr><td>Paquete bajo <code>src/</code></td><td>Paquete en la raíz</td></tr><tr><td>Evita imports accidentales</td><td>Más simple, riesgoso en proyectos grandes</td></tr><tr><td>Recomendado para producción</td><td>Válido para scripts pequeños</td></tr></table>
+AwsEngineer::BestPractices::ProjectStructure	MiPlantilla	¿Para qué sirve requirements-dev.txt?	Contiene dependencias solo para desarrollo: <code>pytest</code>, <code>black</code>, <code>mypy</code>, <code>ruff</code>. No se instalan en producción.
+AwsEngineer::BestPractices::ProjectStructure	MiPlantilla	¿Cuál es la estructura estándar de un proyecto Spring Boot con Maven?	<pre>src/
+  main/
+    java/com/example/  ← código fuente
+    resources/         ← application.yml
+  test/
+    java/com/example/  ← tests
+pom.xml</pre>
+AwsEngineer::BestPractices::ProjectStructure	MiPlantilla	¿Qué secciones debe tener un README.md bien estructurado?	<ul><li>Nombre + descripción en una línea</li><li>Prerequisites (versiones de runtime)</li><li>Install (comandos exactos)</li><li>Run (dev y prod)</li><li>Tabla de env vars</li><li>Resumen de endpoints API</li><li>Notas de deploy</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::BestPractices::SecretsConfig
+# ============================================================
+
+AwsEngineer::BestPractices::SecretsConfig	MiPlantilla	¿Por qué nunca se deben hardcodear secretos en el código?	Porque el código puede publicarse en git y los secretos quedan expuestos para siempre en el historial. Usar variables de entorno o un secrets manager.
+AwsEngineer::BestPractices::SecretsConfig	MiPlantilla	¿Qué dice el principio III de 12-Factor App sobre la configuración?	Separar estrictamente la configuración del código. Todo lo que varía entre entornos (dev, staging, prod) debe venir del entorno, no del código fuente.
+AwsEngineer::BestPractices::SecretsConfig	MiPlantilla	¿Cómo se carga un .env en Python con python-dotenv?	<pre>from dotenv import load_dotenv
+import os
+
+load_dotenv()  # carga .env en os.environ
+db_url = os.getenv("DATABASE_URL", "sqlite:///default.db")</pre>
+AwsEngineer::BestPractices::SecretsConfig	MiPlantilla	¿Qué ventaja tiene Pydantic BaseSettings sobre os.getenv?	BaseSettings valida tipos automáticamente, da error claro si una variable requerida falta, y soporta leer desde .env file y env vars a la vez.
+AwsEngineer::BestPractices::SecretsConfig	MiPlantilla	¿Cómo inyectar una variable de entorno en Spring Boot con application.yml?	<pre>spring:
+  datasource:
+    url: ${DATABASE_URL}
+    password: ${DB_PASSWORD}</pre>Spring reemplaza <code>${VAR}</code> con el valor del entorno al arrancar.
+AwsEngineer::BestPractices::SecretsConfig	MiPlantilla	¿Diferencia entre AWS Secrets Manager y AWS Parameter Store?	<table border="1" cellpadding="6"><tr><th>Secrets Manager</th><th>Parameter Store</th></tr><tr><td>Credenciales DB, API keys</td><td>Config no secreta (flags, URLs)</td></tr><tr><td>Rotación automática</td><td>Sin rotación nativa</td></tr><tr><td>Más caro</td><td>Gratuito (tier básico)</td></tr></table>
+AwsEngineer::BestPractices::SecretsConfig	MiPlantilla	¿Cuál es la jerarquía de configuración (de menor a mayor prioridad)?	<ol><li>Defaults en código</li><li>Archivo .env</li><li>Variables de entorno del SO</li><li>AWS Secrets Manager</li></ol>La fuente de mayor prioridad siempre gana.
+
+# ============================================================
+# MAZO: AwsEngineer::BestPractices::LoggingObservability
+# ============================================================
+
+AwsEngineer::BestPractices::LoggingObservability	MiPlantilla	¿Por qué usar logs estructurados en vez de texto plano?	Los logs JSON son queryables por campos (user_id, status_code, duration). El texto plano requiere regex frágiles para extraer datos.
+AwsEngineer::BestPractices::LoggingObservability	MiPlantilla	¿Cuáles son los 5 niveles de log y cuándo usar cada uno?	<table border="1" cellpadding="6"><tr><th>Nivel</th><th>Cuándo</th></tr><tr><td>DEBUG</td><td>Solo en dev, traza detallada</td></tr><tr><td>INFO</td><td>Operaciones normales</td></tr><tr><td>WARNING</td><td>Inesperado pero manejado</td></tr><tr><td>ERROR</td><td>Fallo, requiere atención</td></tr><tr><td>CRITICAL</td><td>Sistema caído</td></tr></table>
+AwsEngineer::BestPractices::LoggingObservability	MiPlantilla	¿Qué se debe loguear en una aplicación web?	<ul><li>Request in: método, path, user_id</li><li>Response out: status code, duración ms</li><li>Errores con stack trace completo</li><li>Eventos de negocio (usuario creado, pago procesado)</li><li>Llamadas a servicios externos (nombre, endpoint, tiempo)</li></ul>
+AwsEngineer::BestPractices::LoggingObservability	MiPlantilla	¿Qué información NUNCA se debe loguear?	<ul><li>Contraseñas y tokens (JWT, API keys)</li><li>PII: emails, teléfonos, SSN, nombres completos en prod</li><li>Números de tarjeta de crédito</li><li>Request bodies que puedan contener lo anterior</li></ul>
+AwsEngineer::BestPractices::LoggingObservability	MiPlantilla	¿Qué es un Correlation ID y para qué sirve?	UUID generado una vez por request que se adjunta a todas las líneas de log. Permite rastrear un request completo a través de múltiples servicios buscando ese ID.
+AwsEngineer::BestPractices::LoggingObservability	MiPlantilla	¿Cómo propagar un Correlation ID en FastAPI?	<pre>import uuid, structlog
+from fastapi import Request
+
+async def logging_middleware(request: Request, call_next):
+    cid = request.headers.get(
+        "X-Correlation-ID", str(uuid.uuid4()))
+    with structlog.contextvars.bound_contextvars(
+            correlation_id=cid):
+        response = await call_next(request)
+        response.headers["X-Correlation-ID"] = cid
+        return response</pre>
+AwsEngineer::BestPractices::LoggingObservability	MiPlantilla	¿Qué son los Log Groups y Log Streams en AWS CloudWatch?	<ul><li><b>Log Group</b> – Contenedor de logs para un servicio o Lambda</li><li><b>Log Stream</b> – Secuencia de eventos de una instancia específica</li><li><b>Insights</b> – Lenguaje SQL-like para filtrar logs JSON</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::CDK::Fundamentos
+# ============================================================
+
+AwsEngineer::CDK::Fundamentos	MiPlantilla	¿Qué es AWS CDK?	Framework para definir infraestructura AWS usando lenguajes reales (Python, TypeScript, Java). Genera templates de CloudFormation automáticamente.
+AwsEngineer::CDK::Fundamentos	MiPlantilla	¿Qué son App, Stack y Construct en CDK?	<ul><li><b>App</b> – Punto de entrada; raíz del árbol CDK</li><li><b>Stack</b> – Unidad de despliegue; mapea 1:1 a un stack de CloudFormation</li><li><b>Construct</b> – Bloque de construcción; un recurso o grupo de recursos</li></ul>
+AwsEngineer::CDK::Fundamentos	MiPlantilla	¿Qué hace cdk bootstrap?	Provisiona un bucket S3 y repositorio ECR en la cuenta/región para que CDK pueda subir assets (código Lambda, imágenes Docker) durante el deploy.
+AwsEngineer::CDK::Fundamentos	MiPlantilla	¿Cuáles son los 5 comandos principales de CDK?	<ul><li><b>cdk synth</b> – Genera el template CloudFormation</li><li><b>cdk diff</b> – Muestra cambios pendientes</li><li><b>cdk deploy</b> – Despliega a AWS</li><li><b>cdk destroy</b> – Elimina los recursos</li><li><b>cdk ls</b> – Lista todos los stacks</li></ul>
+AwsEngineer::CDK::Fundamentos	MiPlantilla	¿Diferencia entre CDK y Terraform?	<table border="1" cellpadding="6"><tr><th>CDK</th><th>Terraform</th></tr><tr><td>Python/TypeScript/Java</td><td>HCL (lenguaje propio)</td></tr><tr><td>State en CloudFormation</td><td>State en .tfstate</td></tr><tr><td>Solo AWS</td><td>Multi-cloud</td></tr><tr><td>L1/L2/L3 constructs</td><td>Resources y módulos</td></tr></table>
+AwsEngineer::CDK::Fundamentos	MiPlantilla	¿Para qué sirve cdk.json?	Archivo de configuración del proyecto CDK. Define el comando app y guarda valores de contexto usados en síntesis.
+AwsEngineer::CDK::Fundamentos	MiPlantilla	¿Qué es cdk.out/?	Directorio con los templates CloudFormation generados por cdk synth. No se debe commitear al repositorio.
+
+# ============================================================
+# MAZO: AwsEngineer::CDK::Constructs
+# ============================================================
+
+AwsEngineer::CDK::Constructs	MiPlantilla	¿Diferencia entre constructs L1, L2 y L3 en CDK?	<table border="1" cellpadding="6"><tr><th>Nivel</th><th>Prefijo</th><th>Descripción</th></tr><tr><td>L1</td><td>Cfn*</td><td>1:1 CloudFormation, sin defaults</td></tr><tr><td>L2</td><td>Bucket, Vpc...</td><td>Defaults inteligentes, type-safe</td></tr><tr><td>L3</td><td>Patterns</td><td>Soluciones completas multi-recurso</td></tr></table>
+AwsEngineer::CDK::Constructs	MiPlantilla	¿Qué propiedades clave tiene aws_s3.Bucket en CDK?	<ul><li><b>versioned</b> – Activa versionado</li><li><b>removal_policy</b> – DESTROY o RETAIN al hacer cdk destroy</li><li><b>auto_delete_objects</b> – Vacía el bucket antes de eliminarlo</li><li><b>encryption</b> – S3_MANAGED, KMS, etc.</li></ul>
+AwsEngineer::CDK::Constructs	MiPlantilla	¿Cómo se define una Lambda en CDK (Python)?	<pre>fn = _lambda.Function(
+  self, "Fn",
+  runtime=_lambda.Runtime.PYTHON_3_12,
+  handler="handler.main",
+  code=_lambda.Code.from_asset("lambda"),
+  timeout=Duration.seconds(30),
+  memory_size=256,
+)</pre>
+AwsEngineer::CDK::Constructs	MiPlantilla	¿Cómo pasar el nombre de un bucket a una Lambda como env var en CDK?	<pre>fn = _lambda.Function(
+  self, "Fn",
+  environment={"BUCKET": bucket.bucket_name},
+  ...
+)
+bucket.grant_read_write(fn)</pre>CDK genera la política IAM automáticamente con grant_*.
+AwsEngineer::CDK::Constructs	MiPlantilla	¿Qué es CfnOutput en CDK?	Exporta un valor del stack como Output de CloudFormation. Visible en la consola y usable en otros stacks con export_name.
+AwsEngineer::CDK::Constructs	MiPlantilla	¿Cómo aplicar tags a todos los recursos de un stack en CDK?	<pre>cdk.Tags.of(self).add("Environment", "prod")
+cdk.Tags.of(self).add("Project", "my-app")</pre>
+AwsEngineer::CDK::Constructs	MiPlantilla	¿Qué propiedades tiene aws_ec2.Vpc en CDK?	<ul><li><b>max_azs</b> – Número máximo de AZs</li><li><b>nat_gateways</b> – Cantidad de NAT Gateways (0 = sin NAT)</li><li><b>subnet_configuration</b> – Lista de SubnetConfiguration (PUBLIC, PRIVATE_WITH_EGRESS)</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::CDK::Patrones
+# ============================================================
+
+AwsEngineer::CDK::Patrones	MiPlantilla	¿Cómo bindear un Stack a una cuenta y región específica en CDK?	<pre>env = cdk.Environment(
+  account=os.environ["CDK_DEFAULT_ACCOUNT"],
+  region=os.environ["CDK_DEFAULT_REGION"],
+)
+MyStack(app, "MyStack", env=env)</pre>
+AwsEngineer::CDK::Patrones	MiPlantilla	¿Cómo compartir una VPC entre dos stacks en CDK?	Crear VpcStack con self.vpc como atributo público. Pasarlo como prop al AppStack y llamar app_stack.add_dependency(vpc_stack).
+AwsEngineer::CDK::Patrones	MiPlantilla	¿Qué hace from_lookup en CDK?	Importa un recurso existente (VPC, Hosted Zone) buscándolo en la cuenta real. Requiere que el stack tenga env (account + region) definido.
+AwsEngineer::CDK::Patrones	MiPlantilla	¿Cuándo usar RemovalPolicy.DESTROY vs RETAIN?	<ul><li><b>DESTROY</b> – Dev/testing; elimina el recurso al hacer cdk destroy</li><li><b>RETAIN</b> – Producción; el recurso queda aunque se destruya el stack</li></ul>
+AwsEngineer::CDK::Patrones	MiPlantilla	¿Cómo compartir valores entre stacks usando SSM en CDK?	Stack A escribe con ssm.StringParameter. Stack B lee con StringParameter.value_for_string_parameter(). No requiere dependencia explícita entre stacks.
+AwsEngineer::CDK::Patrones	MiPlantilla	¿Cuáles son las mejores prácticas de CDK?	<ul><li>Un stack por entorno (dev/staging/prod)</li><li>Preferir L2 sobre L1</li><li>No hardcodear account IDs</li><li>Usar from_lookup para recursos existentes</li><li>Siempre cdk diff antes de cdk deploy</li><li>Separar stacks stateful y stateless</li></ul>
+AwsEngineer::CDK::Patrones	MiPlantilla	¿Cómo crear un construct personalizado en CDK?	Crear clase que hereda de Construct. Definir recursos internos en __init__. Exponer atributos públicos (self.function, self.dlq) para que el Stack los use.
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::CLF-C02::Domain1
+# ============================================================
+
+AwsEngineer::Certificaciones::CLF-C02::Domain1	MiPlantilla	¿Cuáles son las 6 características esenciales del cloud computing?	<ul><li><b>On-demand self-service</b> – recursos sin intervención humana</li><li><b>Broad network access</b> – acceso desde cualquier dispositivo</li><li><b>Resource pooling</b> – infraestructura multi-tenant compartida</li><li><b>Rapid elasticity</b> – escalar rápido según demanda</li><li><b>Measured service</b> – uso monitorizado y facturado</li><li><b>Pay-as-you-go</b> – solo pagas lo que consumes</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain1	MiPlantilla	¿Cuáles son las 6 ventajas del cloud según AWS?	<ul><li>Cambiar CapEx por OpEx</li><li>Economías de escala masivas</li><li>Dejar de adivinar capacidad</li><li>Mayor velocidad y agilidad</li><li>Dejar de gastar en data centers</li><li>Globalizarse en minutos</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain1	MiPlantilla	¿Cuál es la diferencia entre los 3 modelos de despliegue cloud?	<table border="1" cellpadding="6"><tr><th>Modelo</th><th>Definición</th></tr><tr><td><b>Public</b></td><td>Proveedor tercero; multi-tenant</td></tr><tr><td><b>Private</b></td><td>Exclusivo de una organización</td></tr><tr><td><b>Hybrid</b></td><td>Mezcla público + privado conectados</td></tr></table>
+AwsEngineer::Certificaciones::CLF-C02::Domain1	MiPlantilla	¿Cuál es la diferencia entre IaaS, PaaS y SaaS?	<table border="1" cellpadding="6"><tr><th>Modelo</th><th>Tú gestionas</th><th>AWS gestiona</th></tr><tr><td><b>IaaS</b></td><td>OS, runtime, app, datos</td><td>Hardware, red, hypervisor</td></tr><tr><td><b>PaaS</b></td><td>Código, datos</td><td>OS, runtime, escalado</td></tr><tr><td><b>SaaS</b></td><td>Configuración, acceso</td><td>Todo lo demás</td></tr></table>
+AwsEngineer::Certificaciones::CLF-C02::Domain1	MiPlantilla	¿Cuáles son los 6 pilares del AWS Well-Architected Framework?	<ul><li><b>Operational Excellence</b> – operar y mejorar procesos</li><li><b>Security</b> – proteger datos y sistemas</li><li><b>Reliability</b> – recuperarse de fallos y escalar</li><li><b>Performance Efficiency</b> – usar recursos eficientemente</li><li><b>Cost Optimization</b> – eliminar costos innecesarios</li><li><b>Sustainability</b> – minimizar impacto ambiental</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain1	MiPlantilla	¿Qué es una AWS Region, una AZ y una Edge Location?	<ul><li><b>Region</b> – Área geográfica con 2+ AZs (ej. us-east-1)</li><li><b>AZ (Availability Zone)</b> – Data center(s) con energía/red redundante</li><li><b>Edge Location</b> – Nodo para CloudFront/Route 53 (200+ globales)</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::CLF-C02::Domain2
+# ============================================================
+
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Qué es el Shared Responsibility Model de AWS?	<table border="1" cellpadding="6"><tr><th>AWS responsable (OF the cloud)</th><th>Cliente responsable (IN the cloud)</th></tr><tr><td>Hardware, instalaciones, red global, hypervisor, servicios gestionados</td><td>OS, app, IAM, cifrado de datos, configuración de red (SG, NACLs)</td></tr></table>
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Quién parchea el OS en EC2 vs en RDS?	En <b>EC2</b> el cliente parchea el OS. En <b>RDS</b> AWS parchea el motor de base de datos (el cliente gestiona usuarios y cifrado de datos).
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Qué son IAM Users, Groups, Roles y Policies?	<ul><li><b>User</b> – Identidad permanente para persona o app</li><li><b>Group</b> – Colección de usuarios con las mismas políticas</li><li><b>Role</b> – Identidad temporal asumida por servicios o apps</li><li><b>Policy</b> – JSON que define acciones permitidas/denegadas</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Cuáles son las mejores prácticas de IAM?	<ul><li>No usar root para operaciones diarias</li><li>Activar MFA en la cuenta root</li><li>Crear usuarios IAM individuales</li><li>Usar roles para servicios AWS (no incrustar claves)</li><li>Rotar access keys regularmente</li><li>Aplicar Principle of Least Privilege</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Para qué sirve cada servicio de seguridad de AWS?	<table border="1" cellpadding="6"><tr><th>Servicio</th><th>Función</th></tr><tr><td><b>GuardDuty</b></td><td>Detección de amenazas con ML en logs</td></tr><tr><td><b>Inspector</b></td><td>Análisis de vulnerabilidades en EC2/contenedores</td></tr><tr><td><b>Macie</b></td><td>Detecta datos sensibles (PII) en S3</td></tr><tr><td><b>Shield</b></td><td>Protección DDoS (Standard gratis, Advanced pago)</td></tr><tr><td><b>WAF</b></td><td>Filtra tráfico HTTP con reglas (L7)</td></tr></table>
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Cuál es la diferencia entre CloudTrail y AWS Config?	<b>CloudTrail</b> registra qué llamadas API se hicieron (quién, cuándo, desde dónde). <b>Config</b> registra cómo estaba configurado un recurso y si cumple reglas de compliance.
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Qué es AWS Artifact y para qué sirve?	Portal de autoservicio para descargar reportes de compliance (SOC, PCI DSS, ISO) y firmar acuerdos (BAA para HIPAA).
+AwsEngineer::Certificaciones::CLF-C02::Domain2	MiPlantilla	¿Cuál es la diferencia entre cifrado at-rest y in-transit?	<ul><li><b>At-rest</b> – Datos cifrados almacenados en disco (KMS, SSE-S3, SSE-KMS)</li><li><b>In-transit</b> – Datos cifrados viajando por red (TLS/HTTPS)</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::CLF-C02::Domain3
+# ============================================================
+
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Cuándo elegir EC2 vs Lambda vs Elastic Beanstalk?	<ul><li><b>EC2</b> – Control total del OS; apps con estado o configuración específica</li><li><b>Lambda</b> – Serverless, event-driven, ejecución < 15 min</li><li><b>Elastic Beanstalk</b> – PaaS; solo subes el código, AWS gestiona la infra</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Cuáles son los modelos de precios de EC2?	<ul><li><b>On-Demand</b> – Por segundo, sin compromiso</li><li><b>Reserved</b> – 1 o 3 años; hasta 72% descuento</li><li><b>Spot</b> – Capacidad no usada; hasta 90% descuento, interrumpible</li><li><b>Savings Plans</b> – Compromiso $/hora; cubre EC2, Lambda, Fargate</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Cuál es la diferencia entre S3, EBS y EFS?	<table border="1" cellpadding="6"><tr><th>Servicio</th><th>Tipo</th><th>Caso de uso</th></tr><tr><td><b>S3</b></td><td>Object storage</td><td>Archivos, backups, webs estáticas</td></tr><tr><td><b>EBS</b></td><td>Block storage</td><td>Disco de un EC2</td></tr><tr><td><b>EFS</b></td><td>File system compartido</td><td>NFS entre múltiples EC2</td></tr></table>
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Para qué sirve CloudFront y cómo se diferencia de Route 53?	<b>CloudFront</b> es una CDN que cachea contenido en Edge Locations para reducir latencia. <b>Route 53</b> es el servicio DNS de AWS para resolución de nombres de dominio y routing.
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Cuándo usar RDS vs DynamoDB vs Redshift?	<ul><li><b>RDS</b> – Base de datos relacional gestionada (MySQL, PostgreSQL)</li><li><b>DynamoDB</b> – NoSQL serverless; clave-valor, latencia < 10ms</li><li><b>Redshift</b> – Data warehouse columnar; SQL sobre petabytes</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Qué hace CloudWatch y qué registra CloudTrail?	<b>CloudWatch</b> monitoriza métricas, logs y alarmas de recursos AWS. <b>CloudTrail</b> audita todas las llamadas API (quién hizo qué acción, cuándo y desde dónde).
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Cuándo usar Snowball vs DataSync para migrar datos?	<b>Snowball</b> es un dispositivo físico para transferir datos offline (sin usar internet). <b>DataSync</b> transfiere datos online por red desde NFS/SMB on-premises a S3/EFS.
+AwsEngineer::Certificaciones::CLF-C02::Domain3	MiPlantilla	¿Para qué sirven Athena, Kinesis y Glue?	<ul><li><b>Athena</b> – SQL serverless directamente sobre datos en S3</li><li><b>Kinesis</b> – Ingesta y procesamiento de datos en tiempo real (streaming)</li><li><b>Glue</b> – ETL serverless; descubrir, transformar y cargar datos</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::CLF-C02::Domain4
+# ============================================================
+
+AwsEngineer::Certificaciones::CLF-C02::Domain4	MiPlantilla	¿Cuáles son los 4 modelos de precios de AWS?	<ul><li><b>Pay-as-you-go</b> – Solo pagas lo que usas</li><li><b>Save when you reserve</b> – Compromiso 1-3 años; hasta 72% descuento</li><li><b>Pay less by using more</b> – Descuentos por volumen</li><li><b>Pay less as AWS grows</b> – AWS traslada ahorros a clientes</li></ul>
+AwsEngineer::Certificaciones::CLF-C02::Domain4	MiPlantilla	¿Cuáles son los 3 tipos del AWS Free Tier?	<table border="1" cellpadding="6"><tr><th>Tipo</th><th>Descripción</th><th>Ejemplo</th></tr><tr><td><b>Always Free</b></td><td>Sin expiración</td><td>Lambda 1M req/mes, DynamoDB 25GB</td></tr><tr><td><b>12 Months Free</b></td><td>Desde creación de cuenta</td><td>EC2 t2.micro 750h/mes, S3 5GB</td></tr><tr><td><b>Trials</b></td><td>Prueba corta por servicio</td><td>SageMaker, Inspector</td></tr></table>
+AwsEngineer::Certificaciones::CLF-C02::Domain4	MiPlantilla	¿Qué es AWS Organizations y para qué sirve?	Servicio para gestionar múltiples cuentas AWS. Permite <b>facturación consolidada</b>, descuentos por volumen compartidos y <b>SCPs</b> para restringir servicios por cuenta u OU.
+AwsEngineer::Certificaciones::CLF-C02::Domain4	MiPlantilla	¿Qué son los SCPs en AWS Organizations?	<b>Service Control Policies</b>: políticas que limitan qué servicios/acciones pueden usar las cuentas miembro. Los SCPs nunca otorgan permisos, solo los restringen (afectan incluso al root de la cuenta miembro).
+AwsEngineer::Certificaciones::CLF-C02::Domain4	MiPlantilla	¿Cuáles son los planes de soporte de AWS y cuándo se justifica cada uno?	<table border="1" cellpadding="6"><tr><th>Plan</th><th>Costo</th><th>Respuesta producción crítica</th></tr><tr><td><b>Basic</b></td><td>Gratis</td><td>No disponible</td></tr><tr><td><b>Developer</b></td><td>$29/mes</td><td>No disponible</td></tr><tr><td><b>Business</b></td><td>$100/mes</td><td>&lt; 1 hora</td></tr><tr><td><b>Enterprise</b></td><td>$15,000/mes</td><td>&lt; 15 minutos</td></tr></table>
+AwsEngineer::Certificaciones::CLF-C02::Domain4	MiPlantilla	¿Cuál es la diferencia entre Cost Explorer y AWS Budgets?	<b>Cost Explorer</b> visualiza y analiza el gasto histórico y hace pronósticos. <b>AWS Budgets</b> envía alertas cuando el gasto o uso supera umbrales definidos.
+AwsEngineer::Certificaciones::CLF-C02::Domain4	MiPlantilla	¿Qué es AWS Marketplace?	Catálogo digital de software de terceros que se despliega directamente en AWS. Los cargos aparecen en la factura de AWS. Incluye AMIs preconfiguradas, SaaS y plantillas CloudFormation.
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::SAA-C03::Domain1
+# ============================================================
+
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cuál es la diferencia entre una identity-based policy y una resource-based policy en IAM?	<ul><li><b>Identity-based</b> – Se adjunta al principal (usuario, grupo, rol); define qué puede hacer</li><li><b>Resource-based</b> – Se adjunta al recurso (S3, KMS, Lambda); define quién puede acceder</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Qué es un Permission Boundary en IAM?	Es una política que define el máximo de permisos que una identity-based policy puede conceder a un usuario o rol. No otorga permisos por sí sola; solo actúa como techo.
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cuál es la diferencia entre SCP e IAM policy?	<table border="1" cellpadding="6"><tr><th>SCP</th><th>IAM Policy</th></tr><tr><td>Nivel: AWS Organizations (OU/cuenta)</td><td>Nivel: usuario/grupo/rol</td></tr><tr><td>Solo restringe; no otorga</td><td>Otorga permisos</td></tr><tr><td>Afecta incluso al root de la cuenta</td><td>No afecta al root de la cuenta</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cómo funciona el acceso cross-account mediante roles en AWS?	Cuenta A crea un rol con trust policy que confía en Cuenta B. Cuenta B llama <code>sts:AssumeRole</code> para obtener credenciales temporales del rol en Cuenta A.
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cuáles son las opciones de cifrado en reposo de S3?	<table border="1" cellpadding="6"><tr><th>Opción</th><th>Gestiona la clave</th></tr><tr><td>SSE-S3</td><td>AWS (clave del servicio S3)</td></tr><tr><td>SSE-KMS</td><td>AWS KMS (CMK)</td></tr><tr><td>DSSE-KMS</td><td>AWS KMS (dos capas)</td></tr><tr><td>SSE-C</td><td>Cliente (provee clave por petición)</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Qué es S3 Object Lock y cuáles son sus dos modos?	Protección WORM (Write Once Read Many) para objetos S3.<ul><li><b>Governance</b> – Usuarios con permiso especial pueden anular la retención</li><li><b>Compliance</b> – Nadie puede eliminar ni modificar, ni siquiera root</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cuál es la diferencia entre Security Groups y NACLs en VPC?	<table border="1" cellpadding="6"><tr><th>Security Group</th><th>NACL</th></tr><tr><td>Nivel instancia (ENI)</td><td>Nivel subred</td></tr><tr><td>Stateful (respuesta auto-permitida)</td><td>Stateless (requiere regla de retorno)</td></tr><tr><td>Solo Allow</td><td>Allow y Deny</td></tr><tr><td>Todas las reglas evaluadas</td><td>Reglas en orden (menor número primero)</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cuál es la diferencia entre VPC Gateway Endpoint y Interface Endpoint?	<ul><li><b>Gateway Endpoint</b> – Solo S3 y DynamoDB; gratis; se configura en la tabla de rutas</li><li><b>Interface Endpoint (PrivateLink)</b> – Mayoría de servicios; crea una ENI con IP privada; costo por hora</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cuándo usar Secrets Manager vs SSM Parameter Store?	<ul><li><b>Secrets Manager</b> – Credenciales que necesitan rotación automática (RDS, API keys); ~$0.40/secret/mes</li><li><b>Parameter Store</b> – Configuración general, feature flags, secretos sin rotación; gratis (tier estándar)</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Qué es el envelope encryption en KMS?	<ol><li>KMS genera una <b>Data Encryption Key (DEK)</b> en texto plano</li><li>DEK cifra los datos localmente (rápido)</li><li>KMS cifra la DEK con la CMK → DEK cifrada se almacena junto a los datos</li><li>Para descifrar: KMS descifra la DEK → DEK descifra los datos</li></ol>
+AwsEngineer::Certificaciones::SAA-C03::Domain1	MiPlantilla	¿Cuáles son los tres tipos de CMK en KMS?	<ul><li><b>AWS-managed CMK</b> – Creada por AWS para cada servicio (ej: aws/s3); sin costo</li><li><b>Customer-managed CMK</b> – Creada por el cliente; control total de key policy; $1/mes</li><li><b>Imported key material</b> – Cliente aporta el material de clave; AWS no lo respalda</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::SAA-C03::Domain2
+# ============================================================
+
+AwsEngineer::Certificaciones::SAA-C03::Domain2	MiPlantilla	¿Cuál es la diferencia entre HA, Fault Tolerance y Disaster Recovery?	<ul><li><b>HA</b> – El sistema sigue accesible ante fallos de componentes</li><li><b>FT</b> – Cero downtime durante fallos; continúa operando</li><b>DR</b> – Proceso para restaurar servicios tras un evento catastrófico</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain2	MiPlantilla	¿Cuáles son los tipos de scaling policies en un Auto Scaling Group?	<ul><li><b>Target Tracking</b> – Mantiene una métrica en un valor (ej: CPU = 50%)</li><li><b>Step Scaling</b> – Ajusta capacidad en pasos según magnitud de la alarma</li><li><b>Scheduled</b> – Escala a horas conocidas</li><li><b>Predictive</b> – ML proactivo; ajusta antes del pico</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain2	MiPlantilla	¿Cuál es la diferencia entre RDS Multi-AZ y Read Replica?	<table border="1" cellpadding="6"><tr><th>Multi-AZ</th><th>Read Replica</th></tr><tr><td>Alta disponibilidad / failover</td><td>Escalar lecturas</td></tr><tr><td>Replicación síncrona</td><td>Replicación asíncrona</td></tr><tr><td>Failover automático ~60s</td><td>Promoción manual</td></tr><tr><td>Standby no es legible</td><td>Sí es legible</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain2	MiPlantilla	¿Qué garantiza S3 en términos de durabilidad y disponibilidad?	<b>Durabilidad</b>: 99.999999999% (11 nueves); datos replicados en mínimo 3 AZs. <b>Disponibilidad</b>: 99.99% (Standard). La replicación NO es retroactiva.
+AwsEngineer::Certificaciones::SAA-C03::Domain2	MiPlantilla	¿Cuáles son las políticas de routing de Route 53 y cuándo usar cada una?	<ul><li><b>Simple</b> – Un registro, sin health check</li><li><b>Weighted</b> – A/B testing, migraciones graduales</li><li><b>Latency</b> – Ruta al región más rápida para el usuario</li><li><b>Failover</b> – Primario/secundario con health check</li><li><b>Geolocation</b> – Por país/continente del usuario</li><li><b>Multi-Value</b> – Hasta 8 registros saludables (no es un LB)</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain2	MiPlantilla	¿Cuáles son las 4 estrategias de Disaster Recovery ordenadas de menor a mayor costo?	<table border="1" cellpadding="6"><tr><th>Estrategia</th><th>RTO</th><th>Costo</th></tr><tr><td>Backup & Restore</td><td>Horas</td><td>Mínimo</td></tr><tr><td>Pilot Light</td><td>10–30 min</td><td>Bajo</td></tr><tr><td>Warm Standby</td><td>Minutos</td><td>Medio</td></tr><tr><td>Multi-Site Active-Active</td><td>Casi cero</td><td>Máximo</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain2	MiPlantilla	¿Qué diferencia a Aurora Global Database de un RDS Read Replica cross-region?	<b>Aurora Global Database</b>: replicación < 1 segundo; hasta 5 regiones secundarias; failover gestionado en < 1 min. <b>RDS Read Replica cross-region</b>: asíncrona; lag variable; promoción manual.
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::SAA-C03::Domain3
+# ============================================================
+
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Cuáles son los tres tipos de placement groups en EC2 y cuándo usarlos?	<ul><li><b>Cluster</b> – Misma rack; ultra-baja latencia, 10 Gbps; HPC, riesgo de fallo único</li><li><b>Spread</b> – Hardware diferente por instancia; máx 7 por AZ; instancias críticas</li><li><b>Partition</b> – Grupos en racks separados; Kafka, Cassandra, HDFS</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Cuáles son los tipos de volúmenes EBS y sus casos de uso?	<table border="1" cellpadding="6"><tr><th>Tipo</th><th>Caso de uso</th><th>IOPS máx</th></tr><tr><td>gp3</td><td>General (default)</td><td>16,000</td></tr><tr><td>io2</td><td>DBs misión crítica</td><td>256,000</td></tr><tr><td>st1</td><td>Big data, logs (HDD)</td><td>500</td></tr><tr><td>sc1</td><td>Acceso poco frecuente</td><td>250</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Cuál es la diferencia entre ElastiCache Redis y Memcached?	<table border="1" cellpadding="6"><tr><th>Redis</th><th>Memcached</th></tr><tr><td>Persistencia (RDB/AOF)</td><td>Sin persistencia</td></tr><tr><td>Estructuras avanzadas (sets, sorted sets)</td><td>Solo strings</td></tr><tr><td>Pub/Sub, Lua</td><td>No</td></tr><tr><td>Multi-AZ failover</td><td>No</td></tr><tr><td>Single-thread</td><td>Multi-thread</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Qué es DAX y qué latencia ofrece?	<b>DynamoDB Accelerator (DAX)</b>: caché in-memory totalmente gestionado para DynamoDB. Reduce latencia de lecturas de milisegundos a <b>microsegundos</b>. Funciona en modo write-through.
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Cuándo usar Global Accelerator vs CloudFront?	<ul><li><b>Global Accelerator</b> – TCP/UDP no HTTP; IPs estáticas anycast; gaming, IoT, VoIP; sin caché</li><li><b>CloudFront</b> – HTTP/HTTPS; caché en edge; webs, APIs, vídeo; IPs dinámicas</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Qué es Provisioned Concurrency en Lambda y cuándo usarla?	Pre-inicializa entornos de ejecución para eliminar el cold start. Se usa cuando la función requiere baja latencia consistente (APIs síncronas, endpoints de usuario).
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Cuál es la diferencia entre Kinesis Data Streams y Kinesis Firehose?	<table border="1" cellpadding="6"><tr><th>Data Streams</th><th>Firehose</th></tr><tr><td>Consumidores personalizados (Lambda, KCL)</td><td>Entrega gestionada (S3, Redshift, OpenSearch)</td></tr><tr><td>Tiempo real</td><td>Casi tiempo real (buffer 60s)</td></tr><tr><td>Retención 1–365 días</td><td>Sin retención</td></tr><tr><td>Escala manual (shards)</td><td>Auto-escala</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain3	MiPlantilla	¿Cuándo usar SQS vs SNS vs EventBridge?	<ul><li><b>SQS</b> – Cola pull; desacoplar productor/consumidor; buffer de carga</li><li><b>SNS</b> – Pub/Sub push; fan-out a múltiples suscriptores simultáneos</li><li><b>EventBridge</b> – Bus de eventos; enrutamiento por contenido; integraciones SaaS</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::SAA-C03::Domain4
+# ============================================================
+
+AwsEngineer::Certificaciones::SAA-C03::Domain4	MiPlantilla	¿Cuáles son las opciones de compra de instancias EC2 y cuándo usar cada una?	<table border="1" cellpadding="6"><tr><th>Opción</th><th>Descuento</th><th>Cuándo</th></tr><tr><td>On-Demand</td><td>—</td><td>Carga impredecible o corta</td></tr><tr><td>Reserved (1-3 años)</td><td>Hasta 72%</td><td>Carga constante y predecible</td></tr><tr><td>Savings Plans</td><td>Hasta 66%</td><td>Flexibilidad entre familias/regiones</td></tr><tr><td>Spot</td><td>Hasta 90%</td><td>Tolerante a interrupciones: batch, CI/CD</td></tr></table>
+AwsEngineer::Certificaciones::SAA-C03::Domain4	MiPlantilla	¿Cuál es la diferencia entre Standard RI y Convertible RI?	<ul><li><b>Standard RI</b> – Mayor descuento (72%); no se puede cambiar familia de instancia ni OS</li><li><b>Convertible RI</b> – Menor descuento (66%); sí se puede cambiar familia, OS y tenancy</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::Domain4	MiPlantilla	¿Cuáles son las clases de almacenamiento S3 ordenadas de mayor a menor costo?	<ol><li>S3 Standard</li><li>S3 Standard-IA</li><li>S3 One Zone-IA</li><li>S3 Glacier Instant Retrieval</li><li>S3 Glacier Flexible Retrieval</li><li>S3 Glacier Deep Archive (más barato)</li></ol>S3 Intelligent-Tiering mueve objetos automáticamente entre tiers según acceso.
+AwsEngineer::Certificaciones::SAA-C03::Domain4	MiPlantilla	¿Qué transferencias de datos son gratuitas en AWS?	<ul><li>Datos entrantes a AWS (ingress)</li><li>S3 → CloudFront</li><li>Transferencias dentro de la misma AZ y mismo servicio</li></ul>Son de pago: egress a internet, cross-region y cross-AZ.
+AwsEngineer::Certificaciones::SAA-C03::Domain4	MiPlantilla	¿Por qué usar un VPC Gateway Endpoint para S3 en lugar de un NAT Gateway?	El Gateway Endpoint es <b>gratuito</b> y enruta el tráfico S3/DynamoDB por la red privada de AWS. Un NAT Gateway cobra $0.045/GB de datos procesados además de la tarifa por hora.
+AwsEngineer::Certificaciones::SAA-C03::Domain4	MiPlantilla	¿Qué hace AWS Compute Optimizer?	Analiza métricas de uso con ML y recomienda el tamaño óptimo para EC2, Lambda, ECS tasks y volúmenes EBS. Ayuda a reducir costos eliminando sobreaprovisionamiento.
+AwsEngineer::Certificaciones::SAA-C03::Domain4	MiPlantilla	¿Cuándo es más económico serverless vs instancias reservadas?	<ul><li><b>Serverless (Lambda/Fargate)</b> – Carga variable o esporádica; pagas solo por uso real</li><li><b>Reserved Instances</b> – Carga constante 24/7; el compromiso se amortiza y es más barato que Lambda a escala</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::SAA-C03::CheatSheet
+# ============================================================
+
+AwsEngineer::Certificaciones::SAA-C03::CheatSheet	MiPlantilla	¿Cuándo usar ALB vs NLB?	<ul><li><b>ALB (L7)</b> – Apps web, microservicios, gRPC, path/host routing, WebSockets</li><li><b>NLB (L4)</b> – Alta performance TCP/UDP, IP estática (Elastic IP), gaming, IoT</li></ul>
+AwsEngineer::Certificaciones::SAA-C03::CheatSheet	MiPlantilla	¿Cuáles son los números clave del examen SAA-C03?	<pre>RDS Multi-AZ failover:   ~60 segundos
+Aurora replica failover: ~30 segundos
+Aurora Global DB lag:    < 1 segundo
+S3 durabilidad:          11 nueves (99.999999999%)
+Lambda max tiempo:       15 minutos
+Lambda max memoria:      10,240 MB
+SQS max mensaje:         256 KB
+Kinesis shard entrada:   1 MB/s o 1,000 registros/s
+Kinesis shard salida:    2 MB/s</pre>
+AwsEngineer::Certificaciones::SAA-C03::CheatSheet	MiPlantilla	¿Cuáles son las trampas más frecuentes del examen SAA-C03?	<ul><li>NACLs son <b>stateless</b>: necesitan reglas de entrada Y salida</li><li>Security Groups son <b>stateful</b>: respuesta auto-permitida</li><li>S3 es global pero los buckets son <b>regionales</b></li><li>IAM es <b>global</b>; la mayoría de servicios son regionales</li><li>Multi-AZ standby <b>no es legible</b>; Read Replica sí</li><li>SCP solo restringe, nunca otorga permisos</li><li>ALB no tiene IP estática; usar NLB para IP fija</li></ul>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::DEA-C01::Domain1
+# ============================================================
+
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuál es la capacidad de un shard en Kinesis Data Streams?	<ul><li><b>Ingesta</b>: 1 MB/s o 1,000 registros/s por shard</li><li><b>Consumo</b>: 2 MB/s compartido (polling) o 2 MB/s <b>por consumer</b> con enhanced fan-out</li></ul>
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuándo usar Enhanced Fan-Out en Kinesis?	Cuando tienes múltiples consumers que necesitan 2 MB/s cada uno por shard. Usa <b>SubscribeToShard</b> (push) en lugar de GetRecords (polling).
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Qué retención de datos soporta Kinesis Data Streams?	De <b>1 día</b> (default) hasta <b>365 días</b>. Permite replay de datos dentro de ese periodo. Kinesis Firehose no tiene retención.
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuál es la diferencia entre Kinesis Data Streams y Kinesis Firehose?	<table border="1" cellpadding="6"><tr><th>Streams</th><th>Firehose</th></tr><tr><td>Replay posible</td><td>Sin replay</td></tr><tr><td>Múltiples consumers</td><td>Un destino por stream</td></tr><tr><td>Retención 1–365 días</td><td>Buffer y entrega directa</td></tr><tr><td>Gestión de shards</td><td>Auto-escala gestionado</td></tr></table>
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuáles son los valores del buffer de Kinesis Firehose?	<ul><li><b>Buffer size</b>: 1–128 MB</li><li><b>Buffer interval</b>: 60–900 segundos</li></ul>Firehose hace flush cuando se alcanza cualquiera de los dos.
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuáles son los destinos soportados por Kinesis Data Firehose?	<ul><li>Amazon S3</li><li>Amazon Redshift (vía S3 + COPY)</li><li>Amazon OpenSearch</li><li>Splunk</li><li>HTTP endpoint personalizado</li></ul>
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Qué tipos de ventanas temporales soporta Managed Apache Flink?	<ul><li><b>Tumbling</b>: fija, sin solapamiento (ej. cada 1 min)</li><li><b>Sliding</b>: solapada (ej. últimos 5 min, cada 1 min)</li><li><b>Session</b>: agrupa eventos hasta un período de inactividad</li></ul>
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Qué es un DPU en AWS Glue y cuál es el default?	Data Processing Unit: 1 DPU = 4 vCPU + 16 GB RAM. El costo de Glue Jobs se mide en DPU-horas. Default: <b>10 DPUs</b> por job.
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Qué hace un Glue Crawler?	Recorre fuentes de datos (S3, JDBC, DynamoDB), detecta el schema automáticamente y crea o actualiza tablas en el <b>Glue Data Catalog</b>.
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuál es la diferencia entre Full Load y CDC en DMS?	<ul><li><b>Full Load</b>: copia bulk de todos los datos existentes (one-time)</li><li><b>CDC</b>: replica cambios continuos (INSERT/UPDATE/DELETE) después del full load</li></ul>Se usan juntos para migración completa + sincronización continua.
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuándo se necesita SCT (Schema Conversion Tool) en DMS?	En migraciones <b>heterogéneas</b> (diferente motor de BD), por ejemplo Oracle → PostgreSQL. No se necesita en migraciones homogéneas (MySQL → MySQL).
+AwsEngineer::Certificaciones::DEA-C01::Domain1	MiPlantilla	¿Cuándo NO usar Lambda para ETL?	Cuando el procesamiento dura más de <b>15 minutos</b> o requiere gran volumen de datos. Usar Glue (Spark) o EMR para batch pesado.
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::DEA-C01::Domain2
+# ============================================================
+
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Por qué usar Parquet u ORC en Athena en lugar de CSV?	Son formatos <b>columnares</b>: Athena solo lee las columnas necesarias → menos bytes escaneados → menor costo y mayor velocidad (2–3x).
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Qué estrategia de particionado se recomienda en S3 para data lakes?	<pre>year=2024/month=01/day=15/archivo.parquet</pre>Particionar por los atributos más usados en filtros WHERE. Reduce datos escaneados en Athena.
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Cuáles son los estilos de distribución en Redshift?	<ul><li><b>EVEN</b>: distribución round-robin (sin clave de join conocida)</li><li><b>KEY</b>: filas con misma clave en el mismo nodo (optimiza JOINs)</li><li><b>ALL</b>: tabla completa en cada nodo (tablas de dimensión pequeñas)</li></ul>
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Qué es Redshift Spectrum?	Permite consultar datos en S3 directamente desde Redshift <b>sin cargarlos al cluster</b>. Usa el Glue Data Catalog como fuente de metadatos.
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Cuántas horas retiene datos DynamoDB Streams?	<b>24 horas</b>. Los registros del stream se eliminan automáticamente después de ese periodo.
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Qué hace Lake Formation sobre IAM?	Agrega control de acceso a nivel de <b>columna y fila</b> sobre tablas del Glue Catalog. IAM debe permitir el acceso; Lake Formation lo restringe adicionalmente. No reemplaza a IAM.
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Qué son los LF-Tags en Lake Formation?	Etiquetas de atributo (ABAC) aplicadas a bases de datos, tablas o columnas. Los permisos se otorgan sobre tags en lugar de recursos individuales — escalable para muchas tablas.
+AwsEngineer::Certificaciones::DEA-C01::Domain2	MiPlantilla	¿Cuál es la comparación de formatos para data engineering?	<table border="1" cellpadding="6"><tr><th>Formato</th><th>Tipo</th><th>Mejor uso</th></tr><tr><td>Parquet</td><td>Columnar</td><td>Athena, Glue, Spark</td></tr><tr><td>ORC</td><td>Columnar</td><td>Hive, EMR</td></tr><tr><td>Avro</td><td>Row</td><td>Streaming, schema evolution</td></tr><tr><td>CSV</td><td>Row</td><td>Ingesta simple, interoperabilidad</td></tr></table>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::DEA-C01::Domain3
+# ============================================================
+
+AwsEngineer::Certificaciones::DEA-C01::Domain3	MiPlantilla	¿Cómo se cobra Athena y cómo reducir el costo?	$5 por TB escaneado. Reducir con: <ul><li>Formato columnar (Parquet/ORC)</li><li>Particionado (menos archivos escaneados)</li><li>Compresión</li><li>Workgroups con límite de escaneo por query</li></ul>
+AwsEngineer::Certificaciones::DEA-C01::Domain3	MiPlantilla	¿Qué es CTAS en Athena?	CREATE TABLE AS SELECT: crea una nueva tabla en S3 a partir de una query. Útil para convertir CSV a Parquet con particionado sin mover datos manualmente.
+AwsEngineer::Certificaciones::DEA-C01::Domain3	MiPlantilla	¿Por qué NO usar instancias Spot para nodos Core de EMR?	Los nodos Core almacenan datos en HDFS. Si Spot los interrumpe, los datos se pierden. Spot es seguro solo para nodos <b>Task</b> (stateless, sin HDFS).
+AwsEngineer::Certificaciones::DEA-C01::Domain3	MiPlantilla	¿Qué son los job bookmarks en AWS Glue?	Mecanismo para recordar qué datos ya fueron procesados (último offset JDBC o último objeto S3 procesado). Evita reprocesar en ejecuciones sucesivas del mismo job.
+AwsEngineer::Certificaciones::DEA-C01::Domain3	MiPlantilla	¿Qué métrica de Kinesis indica que el consumer está atrasado?	<b>GetRecords.IteratorAgeMilliseconds</b>: tiempo entre cuando se escribió el registro y cuando fue leído. Valor alto → consumer no puede seguir el ritmo de ingesta.
+AwsEngineer::Certificaciones::DEA-C01::Domain3	MiPlantilla	¿Diferencia entre Step Functions Standard y Express workflows?	<table border="1" cellpadding="6"><tr><th>Standard</th><th>Express</th></tr><tr><td>Hasta 1 año</td><td>Hasta 5 minutos</td></tr><tr><td>Exactly-once</td><td>At-least-once</td></tr><tr><td>Historial de audit</td><td>Mayor throughput, menor costo</td></tr></table>
+
+# ============================================================
+# MAZO: AwsEngineer::Certificaciones::DEA-C01::Domain4
+# ============================================================
+
+AwsEngineer::Certificaciones::DEA-C01::Domain4	MiPlantilla	¿Diferencia entre SSE-S3, SSE-KMS y SSE-C en S3?	<table border="1" cellpadding="6"><tr><th>Opción</th><th>Clave gestionada por</th><th>Audit trail</th></tr><tr><td>SSE-S3</td><td>AWS</td><td>No</td></tr><tr><td>SSE-KMS</td><td>KMS (CMK)</td><td>Sí (CloudTrail)</td></tr><tr><td>SSE-C</td><td>Cliente</td><td>No</td></tr></table>
+AwsEngineer::Certificaciones::DEA-C01::Domain4	MiPlantilla	¿Cómo forzar HTTPS en un bucket S3?	Con una bucket policy que deniegue todas las acciones cuando <code>aws:SecureTransport</code> es <code>false</code>. Aplica a todos los principals.
+AwsEngineer::Certificaciones::DEA-C01::Domain4	MiPlantilla	¿Para qué sirve Amazon Macie en data engineering?	Detecta automáticamente datos PII (SSN, tarjetas, emails) en buckets S3 usando ML. Genera findings con el tipo y ubicación de los datos sensibles para cumplimiento.
+AwsEngineer::Certificaciones::DEA-C01::Domain4	MiPlantilla	¿Qué permisos mínimos necesita el rol de un Glue Job?	<ul><li>S3: GetObject + PutObject (datos de entrada/salida)</li><li>Glue: acceso al Data Catalog</li><li>CloudWatch Logs: crear grupos y streams</li><li>KMS: si usa cifrado SSE-KMS</li></ul>
+AwsEngineer::Certificaciones::DEA-C01::Domain4	MiPlantilla	¿Por qué usar S3 VPC Gateway Endpoint en arquitecturas de datos?	Evita que el tráfico S3 salga por NAT Gateway → elimina el costo de NAT por bytes procesados. El tráfico permanece dentro de la red de AWS. El endpoint es <b>gratuito</b>.
+AwsEngineer::Certificaciones::DEA-C01::Domain4	MiPlantilla	¿Qué es Redshift dynamic data masking?	Políticas de enmascaramiento aplicadas en tiempo de consulta según el rol del usuario. El dato original no cambia en la tabla; la transformación ocurre al momento de leer. Ej: analistas ven <code>***@email.com</code>, admins ven el email completo.
