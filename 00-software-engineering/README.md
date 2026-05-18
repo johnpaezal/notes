@@ -20,6 +20,7 @@
 | 4 | HTTP API Deep | `02-design/http-api-deep.md` |
 | 5 | Design Patterns + MVC | `02-design/design-patterns.md` |
 | 6 | Clean Code | `02-design/clean-code.md` |
+| 7 | UML Diagrams | `02-design/uml/uml.md` |
 
 ### 03 - Architecture
 *Estructura del sistema*
